@@ -12,7 +12,11 @@ public class Main {
 	public static void main(String arg[])
 	{
 		ExpenseUtil e=new ExpenseUtil();
-		boolean res=e.create(7, "Hello Whats Up", 26, 500);
+		ArrayList<Integer> ratios=new ArrayList<>();
+		ratios.add(1);
+		ratios.add(1);
+		ratios.add(2);
+		boolean res=e.create(72, "Hello Whats Up", 26, 800,ratios);
 //		System.out.println(e.showAllSettleUP(7));
 	}
 }

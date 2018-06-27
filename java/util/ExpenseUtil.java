@@ -7,6 +7,7 @@ import java.sql.Statement;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.List;
 
 import model.GroupMembers;
 import model.SettleUp;
@@ -19,14 +20,33 @@ import persistance.Expense;
 public class ExpenseUtil {
 	DbUtil dbUtil=new DbUtil();
 	
-	public boolean create(int gid,String ename, int paid_by,double amount)
+
+	
+	public ArrayList<Double> splitAmnt(List<Integer> share,double amount)
+    {
+	    double sum=0;
+	    for(int i=0;i<share.size();i++) 
+	    {
+	    	sum=sum+share.get(i);
+	    }
+	    ArrayList<Double> alist=new ArrayList<>();
+	    for(int i=0;i<share.size();i++) 
+	    {
+	    	double amt=(share.get(i)*amount)/sum;
+	    	alist.add(amt);
+	    }
+	    return alist;
+    }
+	
+	public boolean create(int gid,String ename, int paid_by,double amount, List<Integer> ratios)
 	{
+		DbUtil.dbConnection();
 		System.out.println(paid_by);
 		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
 		LocalDateTime now = LocalDateTime.now();  
 		String sql="";
 		String createdDate=dtf.format(now);
-		
+		ArrayList<Double> splitAmount=splitAmnt(ratios,amount);
 		Expense expense=new Expense();
 		expense.setAmount(amount);
 		expense.setEid(0);
@@ -40,11 +60,11 @@ public class ExpenseUtil {
 		try {
 			(DbUtil.con).setAutoCommit(false);
 			String teId=dbUtil.findOneColumn("max(eId)", "expense", "0", 0);
-			sql="select * from group_member where grpid="+gid;
+			sql="select * from group_member where grpid="+gid+" order by userid";
 			
 			ArrayList<Entity> ulist = new ArrayList<>();
 			ulist=dbUtil.runQuery(sql, "group_member");
-			boolean res1=splitExpence(teId, ulist, amount, paid_by, gid);
+			boolean res1=splitExpence(teId, ulist, amount, paid_by, gid,splitAmount);
 			if(res1==false)
 			{
 				(DbUtil.con).rollback();
@@ -68,10 +88,10 @@ public class ExpenseUtil {
 		return true;
 	}
 		
-		boolean splitExpence(String eid, ArrayList<Entity> ulist, double amount, int paid_by, int gid) {
+		boolean splitExpence(String eid, ArrayList<Entity> ulist, double amount, int paid_by, int gid, ArrayList<Double> splitAmount) {
 			   
 			int n = ulist.size();
-			double splitAmount = amount/n;
+//			double splitAmount = amount/n;
 			boolean flag=true;
 			for(int i=0;i<n;i++) {
 					try {
@@ -82,7 +102,7 @@ public class ExpenseUtil {
 					}
 					SplitExpense splitexpense=new SplitExpense();
 					splitexpense.setEid(Integer.parseInt(eid));
-					splitexpense.setS_amt(splitAmount);
+					splitexpense.setS_amt(splitAmount.get(i));
 					splitexpense.setUserid(Integer.parseInt(((GroupMembers) ulist.get(i)).getuserId()));
 					if(paid_by==Integer.parseInt(((GroupMembers) ulist.get(i)).getuserId()))
 					{
@@ -103,7 +123,7 @@ public class ExpenseUtil {
 					{
 						BalanceLedger b=new BalanceLedger();
 						b.setFrom(Integer.parseInt(((GroupMembers) ulist.get(i)).getuserId()));
-						b.setAmount(splitAmount);
+						b.setAmount(splitAmount.get(i));
 						b.setGrpid(gid);
 						b.setTo(paid_by);
 						flag=dbUtil.create(b);

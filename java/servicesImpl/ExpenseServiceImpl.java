@@ -119,7 +119,19 @@ public class ExpenseServiceImpl {
 		ArrayList<ExpenseModel> finalRes=new ArrayList<>();
 	
 		Expense e=new Expense();
-		e=(Expense)res.get(0);
+		try {
+			e=(Expense)res.get(0);
+		}catch(Exception e1)
+		{
+			System.out.println(e1);
+			Message m=new Message();
+			m.setStatus("F");
+			m.setMessage("The Expense Id does not belong to the Given Group");
+			return Response.ok()
+					.entity(m)
+						.build();
+		}
+		
 		ArrayList<Entity> sp=dbUtil.runQuery("select *from split_expense where eid="+e.getEid(), "split_expense");
 
 		ExpenseModel em=new ExpenseModel();
@@ -149,8 +161,9 @@ public class ExpenseServiceImpl {
 	@Path("")
 	//@Produces(MediaType.APPLICATION_FORM_URLENCODED)
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	public Response addExpense(@PathParam("gid") int gid, @FormParam("name")String ename,@FormParam("amount")double amount) 
+	public Response addExpense(@PathParam("gid") int gid, @FormParam("name")String ename,@FormParam("amount")double amount, @FormParam("ratio")List<Integer> ratios) 
 	{
+		System.out.println(ratios);
 		if(amount<0)
 		{
 			Message m=new Message();
@@ -184,7 +197,7 @@ public class ExpenseServiceImpl {
 					.entity(m)
 						.build();
 		}
-		boolean res = expenseUtil.create(gid, ename, UserInfo.userid, amount);
+		boolean res = expenseUtil.create(gid, ename, UserInfo.userid, amount,ratios);
 				if(res)
 				{
 					Message m=new Message();
