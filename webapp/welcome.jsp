@@ -1,6 +1,7 @@
 <!DOCTYPE HTML>
 <html>
     <head>
+    	<meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>SplitEasy</title>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
         <link rel="stylesheet" type="text/css" href="stylesheet/app.css">
@@ -95,7 +96,31 @@
       
 
 
-		<script src="js/app.js"></script>
+		<script type="text/javascript">
+			document.querySelector("div.expensefocus").addEventListener("click",function(){
+				$("div.expensefocus").addClass("hide")
+			})
+	
+			$.get("/spliteasy/webapi/group/72",function(data){
+				console.log(data);
+				$("h3.groupheading").text(data.gname)
+				console.log(data.gname);
+				$("span#groupusercreate").text(data.user)
+				$("span#groupuserdate").text(data.created_at)
+				$.get("/spliteasy/webapi/group/72/expense",function(data){
+					console.log(data);
+					data.forEach(function(e){
+						console.log(e);
+						$("div.expenses").append("<div class='col-md-12 expense' value='"+e.eid+"'><h4>"+e.paidBy+" spent Rs "+e.amount+" for "+e.ename+" on "+e.created_at+"</h4></div>")
+						$("div.expense").unbind().click(function(){
+							$("div.expensefocus").removeClass("hide")
+						})
+					})
+				});
+			});
+
+
+		</script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
         <p class="bottom">Trademark SplitEasy</p> 
     </body>

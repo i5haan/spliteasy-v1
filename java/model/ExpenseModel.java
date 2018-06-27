@@ -8,7 +8,21 @@ public class ExpenseModel {
 	private String ename;
 	private String created_at;
 	private double amount;
-	private ArrayList<Entity> split;
+	private String paidBy;
+	private int eid;
+	public int getEid() {
+		return eid;
+	}
+	public void setEid(int eid) {
+		this.eid = eid;
+	}
+	public String getPaidBy() {
+		return paidBy;
+	}
+	public void setPaidBy(String paidBy) {
+		this.paidBy = paidBy;
+	}
+	private ArrayList<SplitExpenseModel> split;
 	public String getEname() {
 		return ename;
 	}
@@ -27,10 +41,10 @@ public class ExpenseModel {
 	public void setAmount(double amount) {
 		this.amount = amount;
 	}
-	public ArrayList<Entity> getSplit() {
+	public ArrayList<SplitExpenseModel> getSplit() {
 		return split;
 	}
-	public void setSplit(ArrayList<Entity> split) {
+	public void setSplit(ArrayList<SplitExpenseModel> split) {
 		this.split = split;
 	}
 	

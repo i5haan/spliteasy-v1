@@ -16,6 +16,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import model.SplitExpense;
+import model.SplitExpenseModel;
 import model.UserInfo;
 import persistance.Expense;
 import util.ExpenseUtil;
@@ -61,6 +62,19 @@ public class ExpenseServiceImpl {
 		ArrayList<Entity> res=new ArrayList<>();
 		DbUtil.dbConnection();
 		res=dbUtil.runQuery(query, "expense");
+		ArrayList<ExpenseModel> finalRes=new ArrayList<>();
+		for(int i=0;i<res.size();i++)
+		{
+			ExpenseModel obj=new ExpenseModel();
+			obj.setPaidBy(dbUtil.findOneColumn("name", "user", "userid", ((Expense)res.get(i)).getPaid_by()));
+			obj.setAmount(((Expense)res.get(i)).getAmount());
+			obj.setCreated_at(((Expense)res.get(i)).getCreated_at());
+			obj.setEname(((Expense)res.get(i)).getEname());
+			obj.setEid(((Expense)res.get(i)).getEid());
+			finalRes.add(obj);
+		}
+		
+		
 		query="select *from user where userid="+UserInfo.userid;
 		ArrayList<Entity> res2=new ArrayList<>();
 		res2=dbUtil.runQuery(query, "user");
@@ -74,7 +88,7 @@ public class ExpenseServiceImpl {
 						.build();
 		}
 		return Response.ok()
-				.entity(res)
+				.entity(finalRes)
 					.build();
 //		
 	
@@ -133,12 +147,22 @@ public class ExpenseServiceImpl {
 		}
 		
 		ArrayList<Entity> sp=dbUtil.runQuery("select *from split_expense where eid="+e.getEid(), "split_expense");
-
+		ArrayList<SplitExpenseModel> spm=new ArrayList<>();
 		ExpenseModel em=new ExpenseModel();
 		em.setAmount(e.getAmount());
 		em.setCreated_at(e.getCreated_at());
 		em.setEname(e.getEname());
-		em.setSplit(sp);
+		em.setPaidBy(dbUtil.findOneColumn("name", "user", "userid", e.getPaid_by()));
+		em.setEid(e.getEid());
+		for(int i=0;i<sp.size();i++)
+		{
+			SplitExpenseModel obj=new SplitExpenseModel();
+			obj.setName(dbUtil.findOneColumn("name", "user", "userid", ((SplitExpense)sp.get(i)).getUserid()));
+			obj.setS_amt(((SplitExpense)sp.get(i)).getS_amt());
+			obj.setType(((SplitExpense)sp.get(i)).getType());
+			spm.add(obj);
+		}
+		em.setSplit(spm);
 		query="select *from user where userid="+UserInfo.userid;
 		ArrayList<Entity> res2=new ArrayList<>();
 		res2=dbUtil.runQuery(query, "user");
