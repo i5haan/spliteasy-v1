@@ -3,8 +3,8 @@ package model;
 public class SettleUp {
 	private double amount;
 	private int grpid;
-	private int paidBy;
-	private int paidTo;
+	private String paidBy;
+	private String paidTo;
 	public double getAmount() {
 		return amount;
 	}
@@ -17,16 +17,17 @@ public class SettleUp {
 	public void setGrpid(int grpid) {
 		this.grpid = grpid;
 	}
-	public int getPaidBy() {
+	public String getPaidBy() {
 		return paidBy;
 	}
-	public void setPaidBy(int paidBy) {
+	public void setPaidBy(String paidBy) {
 		this.paidBy = paidBy;
 	}
-	public int getPaidTo() {
+	public String getPaidTo() {
 		return paidTo;
 	}
-	public void setPaidTo(int paidTo) {
+	public void setPaidTo(String paidTo) {
 		this.paidTo = paidTo;
 	}
+	
 }

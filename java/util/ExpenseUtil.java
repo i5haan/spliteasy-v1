@@ -181,8 +181,8 @@ public class ExpenseUtil {
 		    	System.out.println(e);
 		    	settleUp.setAmount(0);
 		    	settleUp.setGrpid(gid);
-		    	settleUp.setPaidBy(from);
-		    	settleUp.setPaidTo(to);
+		    	settleUp.setPaidBy(dbUtil.findOneColumn("name", "user", "userid", from));
+		    	settleUp.setPaidTo(dbUtil.findOneColumn("name", "user", "userid", to));
 		    	
 		    	return settleUp;
 		    }
@@ -194,8 +194,8 @@ public class ExpenseUtil {
 				System.out.println(from+" will pay z rupee to "+to);
 				settleUp.setAmount(z);
 		    	settleUp.setGrpid(gid);
-		    	settleUp.setPaidBy(from);
-		    	settleUp.setPaidTo(to);
+		    	settleUp.setPaidBy(dbUtil.findOneColumn("name", "user", "userid", from));
+		    	settleUp.setPaidTo(dbUtil.findOneColumn("name", "user", "userid", to));
 			}
 			
 			else 
@@ -204,8 +204,8 @@ public class ExpenseUtil {
 				System.out.println(from+" will pay z rupee to"+to);
 				settleUp.setAmount(z);
 		    	settleUp.setGrpid(gid);
-		    	settleUp.setPaidBy(to);
-		    	settleUp.setPaidTo(from);
+		    	settleUp.setPaidBy(dbUtil.findOneColumn("name", "user", "userid", to));
+		    	settleUp.setPaidTo(dbUtil.findOneColumn("name", "user", "userid", from));
 			}
 			return settleUp;
 		
@@ -253,8 +253,8 @@ public class ExpenseUtil {
 		    	System.out.println(e);
 		    	settleUp.setAmount(0);
 		    	settleUp.setGrpid(gid);
-		    	settleUp.setPaidBy(from);
-		    	settleUp.setPaidTo(to);
+		    	settleUp.setPaidBy(dbUtil.findOneColumn("name", "user", "userid", from));
+		    	settleUp.setPaidTo(dbUtil.findOneColumn("name", "user", "userid", to));
 		    	
 		    	return settleUp;
 		    }
@@ -270,8 +270,8 @@ public class ExpenseUtil {
 				System.out.println(from+" will pay z rupee to "+to);
 				settleUp.setAmount(z);
 		    	settleUp.setGrpid(gid);
-		    	settleUp.setPaidBy(from);
-		    	settleUp.setPaidTo(to);
+		    	settleUp.setPaidBy(dbUtil.findOneColumn("name", "user", "userid", from));
+		    	settleUp.setPaidTo(dbUtil.findOneColumn("name", "user", "userid", to));
 			}
 			
 			else 
@@ -280,8 +280,8 @@ public class ExpenseUtil {
 				System.out.println(from+" will pay z rupee to"+to);
 				settleUp.setAmount(z);
 		    	settleUp.setGrpid(gid);
-		    	settleUp.setPaidBy(to);
-		    	settleUp.setPaidTo(from);
+		    	settleUp.setPaidBy(dbUtil.findOneColumn("name", "user", "userid", to));
+		    	settleUp.setPaidTo(dbUtil.findOneColumn("name", "user", "userid", from));
 			}
 			return settleUp;
 		
