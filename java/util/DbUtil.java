@@ -183,6 +183,7 @@ public class DbUtil
 		try {
 			System.out.println(entity.equals("group_member"));
 			System.out.println(DbUtil.con);
+			dbConnection();
 			Statement stmt = (DbUtil.con).createStatement();
 			System.out.println(entity.equals("group_member"));
 			ResultSet rs=stmt.executeQuery(query);
@@ -229,9 +230,10 @@ public class DbUtil
 			{
 				while(rs.next())
 				{
+					System.out.println("hi");
 					BalanceLedger tEntity=new BalanceLedger();
-					tEntity.setFrom(rs.getInt("from"));
-					tEntity.setTo(rs.getInt("to"));
+					tEntity.setFrom(rs.getInt("fromUser"));
+					tEntity.setTo(rs.getInt("toUser"));
 					tEntity.setAmount(rs.getDouble("amount"));
 					tEntity.setGrpid(rs.getInt("grpid"));
 					resultSet.add((Entity)tEntity);

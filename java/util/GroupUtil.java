@@ -8,6 +8,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import model.GroupMembers;
+import model.UserInfo;
 import persistance.Groups;
 
 import java.time.LocalDateTime;   
@@ -40,7 +41,7 @@ public class GroupUtil {
 		group.setGrpid(0);
 		String sql = "insert into groups values(null,26,?,?)";
 		dbUtil.create(group);
-		sql="select max(grpid) from groups";
+//		sql="select max(grpid) from groups";
 		
 		try {
 			String grpId=dbUtil.findOneColumn("max(grpid)", "groups", "0", 0);
@@ -50,12 +51,36 @@ public class GroupUtil {
 				GroupMembers groupMembers=new GroupMembers();
 				groupMembers.setuserId(eId);
 				groupMembers.setgId(grpId);
-				dbUtil.create(groupMembers);
-				sql = "insert into group_member values("+grpId+","+eId+")";
+				boolean res1=dbUtil.create(groupMembers);
+				if(res1==false)
+				{
+					try {
+						(DbUtil.con).rollback();
+					}catch(Exception exc)
+					{
+						
+					}
+					return false;
+				}
+//				sql = "insert into group_member values("+grpId+","+eId+")";
 //				System.out.println(sql);
 //				PreparedStatement stmt = (DbUtil.con).prepareStatement(sql);
 //				stmt.executeUpdate();
 			}	
+			GroupMembers groupMembers=new GroupMembers();
+			groupMembers.setuserId(Integer.toString(UserInfo.userid));
+			groupMembers.setgId(grpId);
+			boolean res1=dbUtil.create(groupMembers);
+			if(res1==false)
+			{
+				try {
+					(DbUtil.con).rollback();
+				}catch(Exception exc)
+				{
+					
+				}
+				return false;
+			}
 		}catch(Exception e) {
 			System.out.println(e);
 			try {
