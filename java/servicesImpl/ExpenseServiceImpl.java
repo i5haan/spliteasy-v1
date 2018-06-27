@@ -126,7 +126,19 @@ public class ExpenseServiceImpl {
 					.entity(m)
 						.build();
 		}
-		String query="select *from  expense where grpid in (select grpid from group_member where userid="+UserInfo.userid+") and grpid="+gid+" and eid="+eid;
+		String query="select *from user where userid="+UserInfo.userid;
+		ArrayList<Entity> res2=new ArrayList<>();
+		res2=dbUtil.runQuery(query, "user");
+		if(res2.isEmpty())
+		{
+			Message m=new Message();
+			m.setStatus("F");
+			m.setMessage("User not Logged In");
+			return Response.ok()
+					.entity(m)
+						.build();
+		}
+		query="select *from  expense where grpid in (select grpid from group_member where userid="+UserInfo.userid+") and grpid="+gid+" and eid="+eid;
 		ArrayList<Entity> res=new ArrayList<>();
 		DbUtil.dbConnection();
 		res=dbUtil.runQuery(query, "expense");
@@ -164,17 +176,6 @@ public class ExpenseServiceImpl {
 		}
 		em.setSplit(spm);
 		query="select *from user where userid="+UserInfo.userid;
-		ArrayList<Entity> res2=new ArrayList<>();
-		res2=dbUtil.runQuery(query, "user");
-		if(res2.isEmpty())
-		{
-			Message m=new Message();
-			m.setStatus("F");
-			m.setMessage("User not Logged In");
-			return Response.ok()
-					.entity(m)
-						.build();
-		}
 		return Response.ok()
 				.entity(em)
 					.build();
@@ -187,6 +188,16 @@ public class ExpenseServiceImpl {
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	public Response addExpense(@PathParam("gid") int gid, @FormParam("name")String ename,@FormParam("amount")double amount, @FormParam("ratio")List<Integer> ratios) 
 	{
+		int count=Integer.parseInt(dbUtil.findOneColumn("count(*)", "group_member", "grpid", gid));
+		if(count!=ratios.size())
+		{
+			Message m=new Message();
+			m.setStatus("F");
+			m.setMessage("Invalid Ratios");
+			return Response.ok()
+					.entity(m)
+						.build();
+		}
 		System.out.println(ratios);
 		if(amount<0)
 		{

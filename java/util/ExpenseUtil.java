@@ -40,7 +40,7 @@ public class ExpenseUtil {
 	
 	public boolean create(int gid,String ename, int paid_by,double amount, List<Integer> ratios)
 	{
-		DbUtil.dbConnection();
+//		DbUtil.dbConnection();
 		System.out.println(paid_by);
 		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
 		LocalDateTime now = LocalDateTime.now();  
@@ -82,7 +82,7 @@ public class ExpenseUtil {
 					
 				}
 					
-					System.out.println(e);
+					System.out.println("hi");
 					return false;
 			}
 		return true;
