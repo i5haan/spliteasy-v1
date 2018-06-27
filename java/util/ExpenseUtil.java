@@ -9,7 +9,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 import model.GroupMembers;
+import model.SettleUp;
 import model.SplitExpense;
+import model.UserInfo;
 import persistance.BalanceLedger;
 import persistance.Entity;
 import persistance.Expense;
@@ -78,6 +80,13 @@ public class ExpenseUtil {
 			int n = ulist.size();
 			double splitAmount = amount/n;
 			boolean flag=true;
+			try {
+				(DbUtil.con).setAutoCommit(false);
+			}catch(Exception e)
+			{
+				System.out.println(e);
+				return false;
+			}
 			
 			for(int i=0;i<n;i++) {
 					SplitExpense splitexpense=new SplitExpense();
@@ -135,7 +144,8 @@ public class ExpenseUtil {
 
  	       }
 		
-		public double settleupInvidiualInGroup(int gid,int to,int from) {
+		public SettleUp settleupInvidiualInGroup(int gid,int to,int from) {
+			SettleUp settleUp=new SettleUp();
 			BalanceLedger balLedger1 = new BalanceLedger();
 			BalanceLedger balLedger2 = new BalanceLedger();
 		    double x=0, y=0;
@@ -148,19 +158,38 @@ public class ExpenseUtil {
 		    res1=dbUtil.runQuery(query1, "balance_ledger");
 		    res2=dbUtil.runQuery(query2, "balance_ledger");
 		    try {
-		    	balLedger1=(BalanceLedger)res1.get(0);
-			    balLedger2=(BalanceLedger)res2.get(0);
-			    x=balLedger1.getAmount();
-			    y=balLedger2.getAmount();
+		    	try {
+		    		balLedger1=(BalanceLedger)res1.get(0);
+			    	x=balLedger1.getAmount();
+		    	}catch(Exception e)
+		    	{
+		    		x=0;
+		    	}
+		    	try
+		    	{
+		    		balLedger2=(BalanceLedger)res2.get(0);
+				    y=balLedger2.getAmount();
+		    	}
+			    catch(Exception e)
+		    	{
+			    	y=0;
+		    	}
 			    balLedger1.setAmount(-x);
 			    balLedger2.setAmount(-y);
+			    dbUtil.create(balLedger1);
+			    dbUtil.create(balLedger2);
 			    
 			    System.out.println(x);
 			    System.out.println(y);
 		    }catch(Exception e)
 		    {
 		    	System.out.println(e);
-		    	return 0;
+		    	settleUp.setAmount(0);
+		    	settleUp.setGrpid(gid);
+		    	settleUp.setPaidBy(from);
+		    	settleUp.setPaidTo(to);
+		    	
+		    	return settleUp;
 		    }
 		    
 		    
@@ -168,46 +197,109 @@ public class ExpenseUtil {
 			{
 				z=x-y;
 				System.out.println(from+" will pay z rupee to "+to);
+				settleUp.setAmount(z);
+		    	settleUp.setGrpid(gid);
+		    	settleUp.setPaidBy(from);
+		    	settleUp.setPaidTo(to);
 			}
 			
 			else 
 			{
 				z=y-x;
 				System.out.println(from+" will pay z rupee to"+to);
+				settleUp.setAmount(z);
+		    	settleUp.setGrpid(gid);
+		    	settleUp.setPaidBy(to);
+		    	settleUp.setPaidTo(from);
 			}
-			return z;
+			return settleUp;
 		
 		}
 		
+		public SettleUp showSettleUpUtil(int gid,int to,int from) {
+			SettleUp settleUp=new SettleUp();
+			BalanceLedger balLedger1 = new BalanceLedger();
+			BalanceLedger balLedger2 = new BalanceLedger();
+		    double x=0, y=0;
+		    double z;
+		    ArrayList<Entity> res1=new ArrayList<>();
+		    ArrayList<Entity> res2=new ArrayList<>();
+		    String query1="select *from balance_ledger where fromUser="+from+" and toUser="+to+" and grpid="+gid;
+		    String query2="select *from balance_ledger where fromUser="+to+" and toUser="+from+" and grpid="+gid;
+		    
+		    res1=dbUtil.runQuery(query1, "balance_ledger");
+		    res2=dbUtil.runQuery(query2, "balance_ledger");
+		    try {
+		    	try {
+		    		balLedger1=(BalanceLedger)res1.get(0);
+			    	x=balLedger1.getAmount();
+		    	}catch(Exception e)
+		    	{
+		    		x=0;
+		    	}
+		    	try
+		    	{
+		    		balLedger2=(BalanceLedger)res2.get(0);
+				    y=balLedger2.getAmount();
+		    	}
+			    catch(Exception e)
+		    	{
+			    	y=0;
+		    	}
+			    
+			    System.out.println(x);
+			    System.out.println(y);
+		    }catch(Exception e)
+		    {
+		    	System.out.println(e);
+		    	settleUp.setAmount(0);
+		    	settleUp.setGrpid(gid);
+		    	settleUp.setPaidBy(from);
+		    	settleUp.setPaidTo(to);
+		    	
+		    	return settleUp;
+		    }
+		    
+		    
+			if(x>y)
+			{
+				z=x-y;
+				System.out.println(from+" will pay z rupee to "+to);
+				settleUp.setAmount(z);
+		    	settleUp.setGrpid(gid);
+		    	settleUp.setPaidBy(from);
+		    	settleUp.setPaidTo(to);
+			}
+			
+			else 
+			{
+				z=y-x;
+				System.out.println(from+" will pay z rupee to"+to);
+				settleUp.setAmount(z);
+		    	settleUp.setGrpid(gid);
+		    	settleUp.setPaidBy(to);
+		    	settleUp.setPaidTo(from);
+			}
+			return settleUp;
 		
-//		void settleupTotal(int userId1,int userId2) {
-//			BalanceLedger balLeger = new BalanceLedger();
-//		    double x=0, y=0;
-//		    double z;
-//		    while(rs.next())
-//		    {
-//		    	if(userId1 == balLeger.getFrom() && userId2 == balLeger.getTo()) {
-//					x = x + balLeger.getAmount(); 
-//					balLeger.setAmount(0);
-//				}
-//			    if(userId1 == balLeger.getTo() && userId2 == balLeger.getFrom()) {
-//					y = y + balLeger.getAmount(); 
-//					balLeger.setAmount(0);
-//				}
-//				if(x>y)
-//				{
-//					z=x-y;
-//					System.out.println("user1 will pay z rupee to user2");
-//				}
-//				
-//				else 
-//				{
-//					z=y-x;
-//					System.out.println("user1 will pay z rupee to user2");
-//				}
-//			
-//		    
-//		    }
-//			
-//		}
+		}
+		
+		public ArrayList<SettleUp> showAllSettleUP(int gid)
+		{
+			ArrayList<SettleUp> res=new ArrayList<>();
+			String sql="select * from group_member where grpid="+gid;
+			ArrayList<Entity> ulist = new ArrayList<>();
+			ulist=dbUtil.runQuery(sql, "group_member");
+			for(int i=0;i<ulist.size();i++)
+			{
+				int e=Integer.parseInt(((GroupMembers)ulist.get(i)).getuserId());
+				res.add(showSettleUpUtil(gid,UserInfo.userid,e));
+			}
+			
+			ulist=dbUtil.runQuery(sql, "group_member");
+			return res;
+		}
+		
+		
+		
 }

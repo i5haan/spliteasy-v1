@@ -12,7 +12,7 @@ public class Main {
 	public static void main(String arg[])
 	{
 		ExpenseUtil e=new ExpenseUtil();
-		boolean res=e.create(7, "Hello Whats Up", 26, 100);
-		System.out.println(e.settleupInvidiualInGroup(7,27,26));
+//		boolean res=e.create(7, "Hello Whats Up", 26, 500);
+		System.out.println(e.showAllSettleUP(7));
 	}
 }

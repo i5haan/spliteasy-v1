@@ -20,6 +20,8 @@ import model.UserInfo;
 import persistance.Expense;
 import util.ExpenseUtil;
 import model.GroupMembers;
+import model.Message;
+import model.SettleUp;
 import persistance.BalanceLedger;
 import persistance.Entity;
 import util.DbUtil;
@@ -38,12 +40,38 @@ public class ExpenseServiceImpl {
 	@Path("")
 	//@Produces(MediaType.APPLICATION_FORM_URLENCODED)
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	public Response getAllExpense(@PathParam("gid") int gid) 
+	public Response getAllExpense(@PathParam("gid") String gid) 
 	{
+		try
+		{
+			Integer.parseInt(gid);
+		}catch(Exception e)
+		{
+			System.out.println(e);
+			Message m=new Message();
+			m.setStatus("F");
+			m.setMessage(e.getClass().getCanonicalName()+" for group Id");
+			return Response.ok()
+					.entity(m)
+						.build();
+		}
+		
 		String query="select *from  expense where grpid in (select grpid from group_member where userid="+UserInfo.userid+") and grpid="+gid;
 		ArrayList<Entity> res=new ArrayList<>();
 		DbUtil.dbConnection();
 		res=dbUtil.runQuery(query, "expense");
+		query="select *from user where userid="+UserInfo.userid;
+		ArrayList<Entity> res2=new ArrayList<>();
+		res2=dbUtil.runQuery(query, "user");
+		if(res2.isEmpty())
+		{
+			Message m=new Message();
+			m.setStatus("F");
+			m.setMessage("User not Logged In");
+			return Response.ok()
+					.entity(m)
+						.build();
+		}
 		return Response.ok()
 				.entity(res)
 					.build();
@@ -55,12 +83,50 @@ public class ExpenseServiceImpl {
 	@Path("/{eid}")	
 	//@Produces(MediaType.APPLICATION_FORM_URLENCODED)
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	public Response getExpense(@PathParam("gid") int gid, @PathParam("eid") int eid) 
+	public Response getExpense(@PathParam("gid") String gid, @PathParam("eid") String eid) 
 	{
+		try
+		{
+			Integer.parseInt(gid);
+		}catch(Exception e)
+		{
+			System.out.println(e);
+			Message m=new Message();
+			m.setStatus("F");
+			m.setMessage(e.getClass().getCanonicalName()+" for group Id");
+			return Response.ok()
+					.entity(m)
+						.build();
+		}
+		try
+		{
+			Integer.parseInt(eid);
+		}catch(Exception e)
+		{
+			System.out.println(e);
+			Message m=new Message();
+			m.setStatus("F");
+			m.setMessage(e.getClass().getCanonicalName()+" for Expense Id");
+			return Response.ok()
+					.entity(m)
+						.build();
+		}
 		String query="select *from  expense where grpid in (select grpid from group_member where userid="+UserInfo.userid+") and grpid="+gid+" and eid="+eid;
 		ArrayList<Entity> res=new ArrayList<>();
 		DbUtil.dbConnection();
 		res=dbUtil.runQuery(query, "expense");
+		query="select *from user where userid="+UserInfo.userid;
+		ArrayList<Entity> res2=new ArrayList<>();
+		res2=dbUtil.runQuery(query, "user");
+		if(res2.isEmpty())
+		{
+			Message m=new Message();
+			m.setStatus("F");
+			m.setMessage("User not Logged In");
+			return Response.ok()
+					.entity(m)
+						.build();
+		}
 		return Response.ok()
 				.entity(res)
 					.build();
@@ -71,28 +137,84 @@ public class ExpenseServiceImpl {
 	@Path("")
 	//@Produces(MediaType.APPLICATION_FORM_URLENCODED)
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	public Response addExpense(@PathParam("gid") int gid, @FormParam("name")String ename, @FormParam("paid_by")int paid_by, @FormParam("amount")double amount) 
+	public Response addExpense(@PathParam("gid") int gid, @FormParam("name")String ename,@FormParam("amount")double amount) 
 	{
-		
-		System.out.println(gid);
-		System.out.println(ename);
-		System.out.println(UserInfo.userid);
-		System.out.println(amount);
-		boolean res = expenseUtil.create(gid, ename, paid_by, amount);
+		if(amount<0)
+		{
+			Message m=new Message();
+			m.setStatus("F");
+			m.setMessage("Invalid Amount");
+			return Response.ok()
+					.entity(m)
+						.build();
+		}
+		String query="select *from user where userid="+UserInfo.userid;
+		ArrayList<Entity> res2=new ArrayList<>();
+		res2=dbUtil.runQuery(query, "user");
+		if(res2.isEmpty())
+		{
+			Message m=new Message();
+			m.setStatus("F");
+			m.setMessage("User not Logged In");
+			return Response.ok()
+					.entity(m)
+						.build();
+		}
+		boolean res = expenseUtil.create(gid, ename, UserInfo.userid, amount);
 				if(res)
 				{
+					Message m=new Message();
+					m.setStatus("S");
+					m.setMessage("Ok");
 					return Response.ok()
-							.entity(true)
-							.build();
+							.entity(m)
+								.build();
 				}
 				else
 				{
+					Message m=new Message();
+					m.setStatus("S");
+					m.setMessage("Expense Could Not be created!!");
 					return Response.ok()
-							.entity(false)
-							.build();
+							.entity(m)
+								.build();
 				}
 //		
 	
+	}
+	
+	@POST
+	@Path("settleup")
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	public Response settleup(@PathParam("gid") int gid, @FormParam("u1") int userId1, @FormParam("u2") int userId2) 
+	{
+		SettleUp res  = expenseUtil.settleupInvidiualInGroup(gid,userId1,userId2);
+			return Response.ok()
+					.entity(res)
+					.build();
+	}
+	
+	@GET
+	@Path("settleup")
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	public Response settleup(@PathParam("gid") int gid) 
+	{
+		String query="select *from user where userid="+UserInfo.userid;
+		ArrayList<Entity> res2=new ArrayList<>();
+		res2=dbUtil.runQuery(query, "user");
+		if(res2.isEmpty())
+		{
+			Message m=new Message();
+			m.setStatus("F");
+			m.setMessage("User not Logged In");
+			return Response.ok()
+					.entity(m)
+						.build();
+		}
+		ArrayList<SettleUp> res  = expenseUtil.showAllSettleUP(gid);
+			return Response.ok()
+					.entity(res)
+					.build();
 	}
 }
 	
