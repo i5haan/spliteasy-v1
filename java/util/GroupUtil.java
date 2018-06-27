@@ -37,7 +37,7 @@ public class GroupUtil {
 		Groups group=new Groups();
 		group.setGname(gName);
 		group.setCreated_at(createdDate);
-		group.setCuserid(26);
+		group.setCuserid(Integer.parseInt(userId));
 		group.setGrpid(0);
 		String sql = "insert into groups values(null,26,?,?)";
 		dbUtil.create(group);

@@ -21,18 +21,11 @@ public class ExpenseUtil {
 	
 	public boolean create(int gid,String ename, int paid_by,double amount)
 	{
+		System.out.println(paid_by);
 		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
 		LocalDateTime now = LocalDateTime.now();  
 		String sql="";
 		String createdDate=dtf.format(now);
-		DbUtil.dbConnection();
-		try {
-			(DbUtil.con).setAutoCommit(false);
-		}catch(Exception e)
-		{
-			System.out.println(e);
-			return false;
-		}
 		
 		Expense expense=new Expense();
 		expense.setAmount(amount);
@@ -45,6 +38,7 @@ public class ExpenseUtil {
 		
 		
 		try {
+			(DbUtil.con).setAutoCommit(false);
 			String teId=dbUtil.findOneColumn("max(eId)", "expense", "0", 0);
 			sql="select * from group_member where grpid="+gid;
 			
@@ -54,24 +48,23 @@ public class ExpenseUtil {
 			if(res1==false)
 			{
 				(DbUtil.con).rollback();
-				return false;
 			}
 			else
 			{
 				(DbUtil.con).commit();
 			}
-			
 		}
 			catch(Exception e) {
+				try {
+					(DbUtil.con).rollback();
+				}catch(Exception e1)
+				{
+					
+				}
+					
 					System.out.println(e);
 					return false;
 			}
-		
-		try {
-			(DbUtil.con).setAutoCommit(true);
-		}catch(Exception e)
-		{
-		}
 		return true;
 	}
 		
@@ -80,15 +73,13 @@ public class ExpenseUtil {
 			int n = ulist.size();
 			double splitAmount = amount/n;
 			boolean flag=true;
-			try {
-				(DbUtil.con).setAutoCommit(false);
-			}catch(Exception e)
-			{
-				System.out.println(e);
-				return false;
-			}
-			
 			for(int i=0;i<n;i++) {
+					try {
+						(DbUtil.con).setAutoCommit(false);
+					}catch(Exception e)
+					{
+						
+					}
 					SplitExpense splitexpense=new SplitExpense();
 					splitexpense.setEid(Integer.parseInt(eid));
 					splitexpense.setS_amt(splitAmount);
@@ -106,13 +97,6 @@ public class ExpenseUtil {
 					if(flag==false)
 					{
 						System.out.println("flag"+flag);
-						try {
-							(DbUtil.con).rollback();
-						}catch(Exception e)
-						{
-							
-						}
-						
 						break;
 					}
 					if(paid_by!=Integer.parseInt(((GroupMembers) ulist.get(i)).getuserId()))
@@ -124,22 +108,13 @@ public class ExpenseUtil {
 						b.setTo(paid_by);
 						flag=dbUtil.create(b);
 					}
-					if(flag==false)
-					{
-						try {
-							(DbUtil.con).rollback();
-						}catch(Exception e)
-						{
-							
-						}
-						break;
-					}
 					
 					
 					
 					
 					
 				}
+			
 			 return flag;
 
  	       }
@@ -217,6 +192,10 @@ public class ExpenseUtil {
 		}
 		
 		public SettleUp showSettleUpUtil(int gid,int to,int from) {
+			if(to==from)
+			{
+				return null;
+			}
 			SettleUp settleUp=new SettleUp();
 			BalanceLedger balLedger1 = new BalanceLedger();
 			BalanceLedger balLedger2 = new BalanceLedger();
@@ -260,7 +239,11 @@ public class ExpenseUtil {
 		    	return settleUp;
 		    }
 		    
-		    
+		    if(x==y && x==0 && y==0)
+		    {
+		    	return null;
+		    }
+		    	
 			if(x>y)
 			{
 				z=x-y;
@@ -293,7 +276,12 @@ public class ExpenseUtil {
 			for(int i=0;i<ulist.size();i++)
 			{
 				int e=Integer.parseInt(((GroupMembers)ulist.get(i)).getuserId());
-				res.add(showSettleUpUtil(gid,UserInfo.userid,e));
+				SettleUp temp=showSettleUpUtil(gid,UserInfo.userid,e);
+				if(temp!=null)
+				{
+					res.add(temp);
+				}
+				
 			}
 			
 			ulist=dbUtil.runQuery(sql, "group_member");

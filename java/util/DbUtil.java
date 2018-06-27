@@ -223,6 +223,7 @@ public class DbUtil
 					tEntity.setEid(rs.getInt("eid"));
 					tEntity.setEname(rs.getString("ename"));
 					tEntity.setGrpid(rs.getInt("grpid"));
+					tEntity.setPaid_by(rs.getInt("paid_by"));
 					resultSet.add((Entity)tEntity);
 				}
 			}

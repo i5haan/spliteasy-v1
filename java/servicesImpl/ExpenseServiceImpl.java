@@ -19,6 +19,7 @@ import model.SplitExpense;
 import model.UserInfo;
 import persistance.Expense;
 import util.ExpenseUtil;
+import model.ExpenseModel;
 import model.GroupMembers;
 import model.Message;
 import model.SettleUp;
@@ -115,6 +116,17 @@ public class ExpenseServiceImpl {
 		ArrayList<Entity> res=new ArrayList<>();
 		DbUtil.dbConnection();
 		res=dbUtil.runQuery(query, "expense");
+		ArrayList<ExpenseModel> finalRes=new ArrayList<>();
+	
+		Expense e=new Expense();
+		e=(Expense)res.get(0);
+		ArrayList<Entity> sp=dbUtil.runQuery("select *from split_expense where eid="+e.getEid(), "split_expense");
+
+		ExpenseModel em=new ExpenseModel();
+		em.setAmount(e.getAmount());
+		em.setCreated_at(e.getCreated_at());
+		em.setEname(e.getEname());
+		em.setSplit(sp);
 		query="select *from user where userid="+UserInfo.userid;
 		ArrayList<Entity> res2=new ArrayList<>();
 		res2=dbUtil.runQuery(query, "user");
@@ -128,7 +140,7 @@ public class ExpenseServiceImpl {
 						.build();
 		}
 		return Response.ok()
-				.entity(res)
+				.entity(em)
 					.build();
 //		
 	
@@ -160,6 +172,18 @@ public class ExpenseServiceImpl {
 					.entity(m)
 						.build();
 		}
+		query="select *from user where userid in (select userid from group_member where grpid="+gid+") and userid="+UserInfo.userid;
+		res2=new ArrayList<>();
+		res2=dbUtil.runQuery(query, "user");
+		if(res2.isEmpty())
+		{
+			Message m=new Message();
+			m.setStatus("F");
+			m.setMessage("Not Authorized");
+			return Response.ok()
+					.entity(m)
+						.build();
+		}
 		boolean res = expenseUtil.create(gid, ename, UserInfo.userid, amount);
 				if(res)
 				{
@@ -173,7 +197,7 @@ public class ExpenseServiceImpl {
 				else
 				{
 					Message m=new Message();
-					m.setStatus("S");
+					m.setStatus("F");
 					m.setMessage("Expense Could Not be created!!");
 					return Response.ok()
 							.entity(m)
