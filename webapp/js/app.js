@@ -1,3 +1,5 @@
+$(".f-container").fadeOut(0)
+$(".gf-container").fadeOut(0)
 var gid;
 document.querySelector("div.expensefocus").addEventListener("click",function(){
 				$("div.expensefocus").addClass("hide")
@@ -18,16 +20,21 @@ $.get("/spliteasy/webapi/group",function(data){
 })
 		
 var loadGroupList=function(data){
-	
-	
+	 
 	data.forEach(function(group){
 		$("div.list-group").append("<button class='list-group-item groupbutton' value='"+group.grpid+"'>"+group.gname+"</button>")
 	})
+	$("div.list-group").append("<button class='list-group-item addgroupbutton active' >Add New Member</button>")
+	$(".addgroupbutton").unbind().click(function(){
+		$(".gf-container").fadeToggle(500)
+	})
 	$("button.groupbutton").unbind().click(function(){
-		$(".f-container").addClass("hide")
+		$(".settleupfocus").addClass("hide")
+		$(".f-container").fadeOut(0)
 		gid=$(this).attr("value")
 		$.get("/spliteasy/webapi/group/"+gid,function(data){
 			$(".eformtoggle").removeClass("hide")
+			$(".settleuptoggle").removeClass("hide")
 			$("#splitmember").html('<span class="col"><b>MEMBERS</b></span><span class="col"><b>SHARE</b></span><br>')
 			$(".noexpense").addClass("hide")
 			$(".expensepanel").addClass("hide")
@@ -47,7 +54,7 @@ var loadGroupList=function(data){
 		
 		
 $(".eformtoggle").unbind().click(function(){
-	$(".f-container").toggleClass("hide")
+	$(".f-container").fadeToggle(500)
 })
 
 var loadForm=function(gid){
@@ -74,12 +81,12 @@ var loadExpenseInfo =function(gid,id){
 			if(s.name==data.paidBy && s.s_amt==0){
 				str=s.name+" Has paid Rs. "+data.amount
 				console.log(str)
-				$("#split").append("<li class='splitlist'>"+str+"</li>")
+				$("#split").append("<p class='splitlist'>"+str+"</p>")
 			}
 			else if(s.name==data.paidBy){
 				str=s.name+" Has paid Rs. "+data.amount+" and owes Rs. "+s.s_amt
 				console.log(str)
-				$("#split").append("<li class='splitlist'>"+str+"</li>")
+				$("#split").append("<p class='splitlist'>"+str+"</p>")
 			}
 			else if(s.s_amt==0)
 			{
@@ -88,8 +95,9 @@ var loadExpenseInfo =function(gid,id){
 			else{
 				str=s.name+" borrowed Rs. "+s.s_amt
 				console.log(str)
-				$("#split").append("<li class='splitlist'>"+str+"</li>")
+				$("#split").append("<p class='splitlist'>"+str+"</p>")
 			}
+			ascrollto("expensefocus")
 			
 		})
 	})
@@ -111,9 +119,52 @@ var loadExpense=function(gid){
 					var id=$(this).attr("value")
 					loadExpenseInfo(gid,id)
 				})
+				
 			})
+			loadSettleUp(gid)
 		}
+		
 	});
+}
+
+var loadSettleUp=function(gid){
+	$.get("/spliteasy/webapi/group/"+gid+"/expense/settleup",function(data){
+		$("div#settle").text("")
+			if(data.length==0)
+				{
+					$(".settleupfocus h2").text("You Are All Settled Up!")
+				}
+			else
+				{
+				$(".settleupfocus h2").text("Settle Up using the following Scenarios")
+					data.forEach(function(d){
+						if(d.amount!=0)
+							{
+								$("div#settle").append("<p>"+d.paidBy+" can pay Rs "+d.amount+" to "+d.paidTo+"</p><button class='btn btn-xs setup' u1='"+d.padiToId+"' u2='"+d.paidById+"' route='/spliteasy/webapi/group/"+gid+"/expense/settleup'>Settle This Amount</button>")
+								$("button.setup").unbind().click(function(){
+									var u1=$(this).attr("u1")
+									var u2=$(this).attr("u2")
+									var route=$(this).attr("route")
+									var sendData={
+										u1:u1,
+										u2:u2
+									}
+									console.log($.param(sendData,true))
+									console.log(route)
+									$.ajax({
+										url:route,
+										data:$.param(sendData,true),
+										type:"POST",
+										success:function(res){
+											alert("Successfully Settleup!")
+											loadSettleUp(gid)
+										}
+									})
+								})
+							}
+					})
+				}
+		})
 }
 
 $(".expensesubmit").unbind().click(function(){
@@ -142,10 +193,36 @@ $(".expensesubmit").unbind().click(function(){
 			else
 				{
 					alert("Expense Created Successfully!")
+					$(".f-container").fadeOut(0)
+					$(".ename").val("")
+					$(".eamount").val("")
 					loadExpense(gid)
+					loadSettleUp(gid)
 				}
 		}
 	})
 	console.log(sendData)
 	console.log(route)
 })
+
+
+function ascrollto(id) {
+	var etop = $('.' + id).offset().top;
+	$('html, body').animate({
+	  scrollTop: etop
+	}, 1000);
+}
+
+
+
+$(document).ready(function() {  
+    $("#Add").on("click", function() {  
+        $("#textboxDiv").append("<div class='form-group'><p class='form-label'>ENTER MEMBER NAME</p><input class='form-control' name=\"members\" placeholder='Enter the Member Name' type='text'/></div>");  
+    });    
+});
+
+
+$(".settleuptoggle").unbind().click(function(){
+	$(".settleupfocus").toggleClass("hide")
+})
+
