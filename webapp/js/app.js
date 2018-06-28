@@ -5,26 +5,31 @@ document.querySelector("div.expensefocus").addEventListener("click",function(){
 				$("div.expensefocus").addClass("hide")
 			})
 			
-$.get("/spliteasy/webapi/group",function(data){
-	
-	if(data.status && data.status=="F")
-	{
-		alert(data.message)
-		window.location="/spliteasy/login.jsp"
-	}
-	else
-	{
-		loadGroupList(data)
-	}
-	
-})
+var init=function(){
+	$("div.list-group").text("")
+	$.get("/spliteasy/webapi/group",function(data){
+		
+		if(data.status && data.status=="F")
+		{
+			alert(data.message)
+			window.location="/spliteasy/login.jsp"
+		}
+		else
+		{
+			loadGroupList(data)
+		}
+		
+	})
+}
+			
+
 		
 var loadGroupList=function(data){
 	 
 	data.forEach(function(group){
 		$("div.list-group").append("<button class='list-group-item groupbutton' value='"+group.grpid+"'>"+group.gname+"</button>")
 	})
-	$("div.list-group").append("<button class='list-group-item addgroupbutton active' >Add New Member</button>")
+	$("div.list-group").append("<button class='list-group-item addgroupbutton active' >Add New Group</button>")
 	$(".addgroupbutton").unbind().click(function(){
 		$(".gf-container").fadeToggle(500)
 	})
@@ -217,7 +222,7 @@ function ascrollto(id) {
 
 $(document).ready(function() {  
     $("#Add").on("click", function() {  
-        $("#textboxDiv").append("<div class='form-group'><p class='form-label'>ENTER MEMBER NAME</p><input class='form-control' name=\"members\" placeholder='Enter the Member Name' type='text'/></div>");  
+        $("#textboxDiv").append("<div class='form-group'><p class='form-label'>ENTER MEMBER NAME</p><input class='form-control members' name=\"members\" placeholder='Enter the Member Name' type='text'/></div>");  
     });    
 });
 
@@ -226,3 +231,29 @@ $(".settleuptoggle").unbind().click(function(){
 	$(".settleupfocus").toggleClass("hide")
 })
 
+$(".btn-group-add").unbind().click(function(){
+	var arr=[]
+	$(".members").each(function(){
+		arr.push($(this).val())
+	})
+	var name=$(".gnamesend").val()
+	var route="/spliteasy/webapi/group"
+	var sendData={
+		name:name,
+		members:arr
+	}
+	console.log($.param(sendData,true))
+	$.ajax({
+		url:route,
+		data:$.param(sendData,true),
+		type:"POST",
+		success:function(res){
+			alert(res)
+			init()
+		}
+	})
+	console.log(sendData)
+	console.log(route)
+})
+
+init()

@@ -4,6 +4,7 @@
     	<meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>SplitEasy</title>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css" integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt" crossorigin="anonymous">
         <link rel="stylesheet" type="text/css" href="stylesheet/app.css">
         <script
           src="https://code.jquery.com/jquery-3.3.1.min.js"
@@ -52,16 +53,16 @@
                 <div method="post" action="/spliteasy/webapi/group">
                     <div class="form-group">
                         <p class="form-label">GROUP NAME</p>
-                        <input class="form-control" type="text" name="name" placeholder="Enter the group Name" required="">
+                        <input class="form-control gnamesend" type="text" name="name" placeholder="Enter the group Name" required="">
                     </div>
                    <div class="form-group"> 
                    	<div id="textboxDiv"></div>  
                    </div>
-                   <div class='form-group'><p class='form-label'>ENTER MEMBER NAME</p><input class='form-control' name="members" placeholder='Enter the Member Name' type='text'/></div>
-                   <div class="form-group"><button id="Add"><img  height="42" width="42" src="images/add_member.png" /></button></div>
+                   <div class='form-group'><p class='form-label'>ENTER MEMBER NAME</p><input class='form-control members' name="members" placeholder='Enter the Member Name' type='text'/></div>
+                   <div class="form-group"><button id="Add"><!-- <img  height="42" width="42" src="images/add_member.png" /> --><i class="fas fa-plus"></i></button></div>
                     
                     <div class="form-group">
-                        <button class="btn btn-lg btn-success btn-block"><b>SUBMIT</b></button>
+                        <button class="btn btn-lg btn-success btn-block btn-group-add"><b>SUBMIT</b></button>
                     </div>
                 </div>
             </div>
