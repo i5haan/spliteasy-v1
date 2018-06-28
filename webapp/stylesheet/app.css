@@ -62,14 +62,11 @@ body
 	transition: 1s;
 }
 
-.expense:nth-child(2n)
-{
-	background: rgba(0,255,0,0.5);
-}
 
-.expense:nth-child(2n+1)
+
+div.expense:nth-child(2n+1)
 {
-	background: rgba(255,0,0,0.5)
+	background: rgba(68, 145, 234,0.5);
 }
 
 .expense h4
@@ -91,16 +88,13 @@ body
 	padding:70px;
 	padding-left: 70px;
 	height:100%;
-	background: rgba(0,0,0,0.7);
+	background: white;
 	transition: 0.2s linear;
 	top:0;
 	margin-bottom:20px;
 }
 					
-.expensefocus:hover
-{
-	background: rgba(250,0,0,0.2);
-}
+
 					
 .hide
 {
@@ -109,7 +103,30 @@ body
 
 div.expensefocus
 {
-	color:#ff0000;
+	color:steelblue;
+	font-weight:700;
+} 
+
+.groupheading
+{
+	font-weight:700;
 }
+
+
+a
+{
+	color:inherit;
+}
+
+#split
+{
+	list-style-type: none;
+}
+
+#split li
+{
+	margin:5px;
+}
+
 
 

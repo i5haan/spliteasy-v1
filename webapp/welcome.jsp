@@ -44,24 +44,31 @@
     <div class="col-md-3">
       <p class="lead"><em>Your Groups</em></p>
       <div class="list-group">
-        <button class="list-group-item active">Group 1</button>
-        <button class="list-group-item">Group 2</button>
-        <button class="list-group-item">Group 3</button>
+        
       </div>
     </div>
     <div class="col-md-9">
             <div class="thumbnail">
               <div class="caption-full">
-                <h3 class="groupheading">Group 1</h3>
-                <h4><em>Created by <span id="groupusercreate"></span></em></h4>
-                <p>Created on <span id="groupuserdate"></span></p>
+                <h2 class="groupheading">Select a Group from the List!!</h2>
+                <h4><em><span id="groupusercreate"></span></em></h4>
+                <p><span id="groupuserdate"></span></p>
               </div>
 
             </div>
             <div class="expensefocus hide">
-      		
+            	<h2 id="ename"></h2>
+            	<em><div id="createdby"></div></em>
+            	<em><div id="createdon"></div></em>
+            	<h4 id="amount"></h4>
+            	<hr>
+            	Split Details
+            	<hr>
+            	<ul id="split">
+            		
+            	</ul>
       		</div>
-            <div class="well">
+            <div class="well hide expensepanel">
               <div class="text-center">
                 <h3>Group Expenses</h3>
               </div>
@@ -69,6 +76,13 @@
                 <div class="row expenses">
                 	
                 </div>
+            </div>
+            
+            <div class="well hide noexpense">
+              <div class="text-center">
+                <h3>It seems you are having a boring life :P</h3>
+              </div>
+              <hr>
             </div>
             
           </div>
