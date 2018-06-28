@@ -10,26 +10,7 @@
           integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
           crossorigin="anonymous"></script>
           <style type="text/css">
-          		.expensefocus
-					{
-					  padding:70px;
-					    padding-left: 70px;
-					    height:100%;
-					    background: rgba(0,0,0,0.7);
-					    transition: 0.2s linear;
-					    top:0;
-					    margin-bottom:20px;
-					}
-					
-					.expensefocus:hover
-					{
-					  background: rgba(250,0,0,0.2);
-					}
-					
-					.hide
-					{
-						display:hidden;
-					}
+          		
           		
           </style>
     </head>
@@ -96,28 +77,8 @@
       
 
 
-		<script type="text/javascript">
-			document.querySelector("div.expensefocus").addEventListener("click",function(){
-				$("div.expensefocus").addClass("hide")
-			})
-	
-			$.get("/spliteasy/webapi/group/72",function(data){
-				console.log(data);
-				$("h3.groupheading").text(data.gname)
-				console.log(data.gname);
-				$("span#groupusercreate").text(data.user)
-				$("span#groupuserdate").text(data.created_at)
-				$.get("/spliteasy/webapi/group/72/expense",function(data){
-					console.log(data);
-					data.forEach(function(e){
-						console.log(e);
-						$("div.expenses").append("<div class='col-md-12 expense' value='"+e.eid+"'><h4>"+e.paidBy+" spent Rs "+e.amount+" for "+e.ename+" on "+e.created_at+"</h4></div>")
-						$("div.expense").unbind().click(function(){
-							$("div.expensefocus").removeClass("hide")
-						})
-					})
-				});
-			});
+		<script type="text/javascript" src="js/app.js">
+			
 
 
 		</script>
