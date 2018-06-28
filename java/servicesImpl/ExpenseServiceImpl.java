@@ -188,6 +188,25 @@ public class ExpenseServiceImpl {
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	public Response addExpense(@PathParam("gid") int gid, @FormParam("name")String ename,@FormParam("amount")double amount, @FormParam("ratio")List<Integer> ratios) 
 	{
+		System.out.println(ratios);
+		if(ename==null || ename.equals(""))
+		{
+			Message m=new Message();
+			m.setStatus("F");
+			m.setMessage("Name cannot be null");
+			return Response.ok()
+					.entity(m)
+						.build();
+		}
+		if(amount==0)
+		{
+			Message m=new Message();
+			m.setStatus("F");
+			m.setMessage("Invalid Amount");
+			return Response.ok()
+					.entity(m)
+						.build();
+		}
 		DbUtil.dbConnection();
 		int count=Integer.parseInt(dbUtil.findOneColumn("count(*)", "group_member", "grpid", gid));
 		if(count!=ratios.size())

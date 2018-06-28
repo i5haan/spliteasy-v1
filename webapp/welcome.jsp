@@ -50,17 +50,44 @@
     <div class="col-md-9">
             <div class="thumbnail">
               <div class="caption-full">
+              <button class="eformtoggle btn btn-success pull-right hide">Add Expense</button>
                 <h2 class="groupheading">Select a Group from the List!!</h2>
+                
                 <h4><em><span id="groupusercreate"></span></em></h4>
                 <p><span id="groupuserdate"></span></p>
               </div>
 
+            </div>
+            
+            <div class="f-container hide">
+            	<h3 class="form-heading">ADD EXPENSE</h3>
+	            <div class="form-container">
+	                <div method="post" action="#" id="expenseformdata">
+	                    <div class="form-group">
+	                        <p class="form-label">Enter a description</p>
+	                        <input class="form-control ename" type="text" name="name" placeholder="Enter a description" required="">
+	                    </div>
+	                    <div class="form-group">
+	                        <p class="form-label">Enter the amount</p>
+	                        <input class="form-control eamount" type="text" name="amount" placeholder="Enter the amount" required="">
+	                    </div>
+	                    <div id="splitmember" "form-group" >
+	                    	<span class="col"><b>MEMBERS</b></span><span class="col"><b>SHARE</b></span><br>
+	                    </div>
+	                   <br><br> 
+	                    <div class="form-group">
+	                        <button class="btn btn-lg btn-success btn-block expensesubmit">Add Expense</button>
+	                    </div>
+	                    
+	                </div>
+	            </div>
             </div>
             <div class="expensefocus hide">
             	<h2 id="ename"></h2>
             	<em><div id="createdby"></div></em>
             	<em><div id="createdon"></div></em>
             	<h4 id="amount"></h4>
+            	
             	<hr>
             	Split Details
             	<hr>

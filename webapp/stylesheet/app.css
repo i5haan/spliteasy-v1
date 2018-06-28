@@ -128,5 +128,21 @@ a
 	margin:5px;
 }
 
+.f-container
+{
+	background:white;
+	padding-top:10px;
+	padding-bottom:10px;
+}
+
+.col
+{
+	width:49%;
+	display:inline-block;
+	padding:5%;
+}
+
+
+
 
 
