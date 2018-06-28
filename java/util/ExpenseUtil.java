@@ -40,7 +40,7 @@ public class ExpenseUtil {
 	
 	public boolean create(int gid,String ename, int paid_by,double amount, List<Integer> ratios)
 	{
-//		DbUtil.dbConnection();
+		DbUtil.dbConnection();
 		System.out.println(paid_by);
 		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
 		LocalDateTime now = LocalDateTime.now();  
@@ -183,6 +183,8 @@ public class ExpenseUtil {
 		    	settleUp.setGrpid(gid);
 		    	settleUp.setPaidBy(dbUtil.findOneColumn("name", "user", "userid", from));
 		    	settleUp.setPaidTo(dbUtil.findOneColumn("name", "user", "userid", to));
+		    	settleUp.setPaidById(from);
+		    	settleUp.setPadiToId(to);
 		    	
 		    	return settleUp;
 		    }
@@ -196,6 +198,9 @@ public class ExpenseUtil {
 		    	settleUp.setGrpid(gid);
 		    	settleUp.setPaidBy(dbUtil.findOneColumn("name", "user", "userid", from));
 		    	settleUp.setPaidTo(dbUtil.findOneColumn("name", "user", "userid", to));
+		    	settleUp.setPaidById(from);
+		    	settleUp.setPadiToId(to);
+		    	
 			}
 			
 			else 
@@ -206,6 +211,8 @@ public class ExpenseUtil {
 		    	settleUp.setGrpid(gid);
 		    	settleUp.setPaidBy(dbUtil.findOneColumn("name", "user", "userid", to));
 		    	settleUp.setPaidTo(dbUtil.findOneColumn("name", "user", "userid", from));
+		    	settleUp.setPaidById(to);
+		    	settleUp.setPadiToId(from);
 			}
 			return settleUp;
 		
@@ -255,6 +262,8 @@ public class ExpenseUtil {
 		    	settleUp.setGrpid(gid);
 		    	settleUp.setPaidBy(dbUtil.findOneColumn("name", "user", "userid", from));
 		    	settleUp.setPaidTo(dbUtil.findOneColumn("name", "user", "userid", to));
+		    	settleUp.setPaidById(from);
+		    	settleUp.setPadiToId(to);
 		    	
 		    	return settleUp;
 		    }
@@ -272,6 +281,8 @@ public class ExpenseUtil {
 		    	settleUp.setGrpid(gid);
 		    	settleUp.setPaidBy(dbUtil.findOneColumn("name", "user", "userid", from));
 		    	settleUp.setPaidTo(dbUtil.findOneColumn("name", "user", "userid", to));
+		    	settleUp.setPaidById(from);
+		    	settleUp.setPadiToId(to);
 			}
 			
 			else 
@@ -282,6 +293,8 @@ public class ExpenseUtil {
 		    	settleUp.setGrpid(gid);
 		    	settleUp.setPaidBy(dbUtil.findOneColumn("name", "user", "userid", to));
 		    	settleUp.setPaidTo(dbUtil.findOneColumn("name", "user", "userid", from));
+		    	settleUp.setPaidById(to);
+		    	settleUp.setPadiToId(from);
 			}
 			return settleUp;
 		

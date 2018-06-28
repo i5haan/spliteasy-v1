@@ -36,7 +36,6 @@ public class DbUtil
 	
 	public boolean create(Entity obj)
 	{
-		dbConnection();
 		String sql="";
 		String res=obj.getEntity();
 		System.out.println(res);
@@ -136,7 +135,6 @@ public class DbUtil
 	//Returns Only 1 entry
 	public String findOneColumn(String colName, String entity, String key, String value)
 	{
-		dbConnection();
 		String sql="";
 		try {
 			sql="select "+colName+" from "+entity+" where "+key+"='"+value+"'";
@@ -158,7 +156,7 @@ public class DbUtil
 	
 	public String findOneColumn(String colName, String entity, String key, int value)
 	{
-		dbConnection();
+//		dbConnection();
 		String sql="";
 		try {
 			sql="select "+colName+" from "+entity+" where "+key+"="+value+"";
@@ -179,7 +177,6 @@ public class DbUtil
 	
 	public ArrayList<Entity> runQuery(String query,String entity)
 	{
-		dbConnection();
 		System.out.println(entity);
 		System.out.println(query);
 		

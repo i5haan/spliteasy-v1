@@ -128,6 +128,7 @@ public class ExpenseServiceImpl {
 		}
 		String query="select *from user where userid="+UserInfo.userid;
 		ArrayList<Entity> res2=new ArrayList<>();
+		DbUtil.dbConnection();
 		res2=dbUtil.runQuery(query, "user");
 		if(res2.isEmpty())
 		{
@@ -140,7 +141,6 @@ public class ExpenseServiceImpl {
 		}
 		query="select *from  expense where grpid in (select grpid from group_member where userid="+UserInfo.userid+") and grpid="+gid+" and eid="+eid;
 		ArrayList<Entity> res=new ArrayList<>();
-		DbUtil.dbConnection();
 		res=dbUtil.runQuery(query, "expense");
 		ArrayList<ExpenseModel> finalRes=new ArrayList<>();
 	
@@ -188,6 +188,7 @@ public class ExpenseServiceImpl {
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	public Response addExpense(@PathParam("gid") int gid, @FormParam("name")String ename,@FormParam("amount")double amount, @FormParam("ratio")List<Integer> ratios) 
 	{
+		DbUtil.dbConnection();
 		int count=Integer.parseInt(dbUtil.findOneColumn("count(*)", "group_member", "grpid", gid));
 		if(count!=ratios.size())
 		{
@@ -260,6 +261,7 @@ public class ExpenseServiceImpl {
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	public Response settleup(@PathParam("gid") int gid, @FormParam("u1") int userId1, @FormParam("u2") int userId2) 
 	{
+		DbUtil.dbConnection();
 		SettleUp res  = expenseUtil.settleupInvidiualInGroup(gid,userId1,userId2);
 			return Response.ok()
 					.entity(res)
@@ -271,6 +273,7 @@ public class ExpenseServiceImpl {
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	public Response settleup(@PathParam("gid") int gid) 
 	{
+		DbUtil.dbConnection();
 		String query="select *from user where userid="+UserInfo.userid;
 		ArrayList<Entity> res2=new ArrayList<>();
 		res2=dbUtil.runQuery(query, "user");
