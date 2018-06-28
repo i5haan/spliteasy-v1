@@ -82,6 +82,15 @@ public class GroupServiceImpl implements GroupService
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	public Response add(@FormParam("name") String gName, @FormParam("members") List<String> members)
 	{
+		if(gName==null	 || members.size()==0)
+		{
+			Message m=new Message();
+			m.setStatus("F");
+			m.setMessage("One of the paramaters are missing");
+			return Response.ok()
+					.entity(m)
+						.build();
+		}
 		String query="select *from user where userid="+UserInfo.userid;
 		ArrayList<Entity> res2=new ArrayList<>();
 		res2=dbUtil.runQuery(query, "user");
