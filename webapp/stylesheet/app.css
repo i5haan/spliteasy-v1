@@ -74,11 +74,6 @@ div.expense:nth-child(2n+1)
 	margin:0;
 }
 
-.expense:hover
-{
-	background: rgba(0,0,0,0.3);
-}
-
 .lead
 {
 	font-weight: bold;
@@ -170,6 +165,15 @@ a
 	margin-bottom:20px;
 }
 
+.dltexpense
+{
+	margin:auto;
+}
+
+.fa-money-bill-wave:before
+{
+	margin-right:4px;
+}
 
 
 

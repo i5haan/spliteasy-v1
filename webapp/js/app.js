@@ -47,6 +47,7 @@ var loadGroupList=function(data){
 			$(".groupheading").text(data.gname)
 			$("#groupusercreate").text("Created by "+data.user)
 			$("#groupuserdate").text("Create On "+data.created_at.slice(0,10))
+			ascrollto("caption-full")
 			loadSettleUp(gid)
 			loadExpense(gid)
 	});
@@ -119,11 +120,30 @@ var loadExpense=function(gid){
 			$("div.expenses").text("")
 			data.forEach(function(e){
 				
-				$("div.expenses").append("<div class='col-md-12 expense' value='"+e.eid+"'><h4>"+e.paidBy+" spent Rs "+e.amount+" for "+e.ename+" on "+e.created_at.slice(0,10)+"</h4></div>")
+				$("div.expenses").append("<div class='col-md-12 expense' value='"+e.eid+"'><h4>"+e.paidBy+" spent Rs "+e.amount+" for "+e.ename+" on "+e.created_at.slice(0,10)+"<br><button class='btn btn-xs btn-danger dltexpense' route='/spliteasy/webapi/group/"+gid+"/expense/"+e.eid+"'>Delete This Expense</button></h4></div>")
 				$("div.expense").unbind().click(function(){
 					$("div.expensefocus").removeClass("hide")
 					var id=$(this).attr("value")
 					loadExpenseInfo(gid,id)
+				})
+				$("button.dltexpense").unbind().click(function(e){
+					e.stopPropagation();
+					var id=$(this).attr("route")
+					$.ajax({
+					    url: id,
+					    type: 'DELETE',
+					    success: function(res) {
+					       if(res.status && res.status=="F"){
+					    	   alert(res.message)
+					       }
+					       else{
+					    	   alert(res.message)
+					    	   $(".expensepanel").addClass("hide")
+					    	   loadExpense(gid)
+					    	   loadSettleUp(gid)
+					       }
+					    }
+					});
 				})
 				
 			})
