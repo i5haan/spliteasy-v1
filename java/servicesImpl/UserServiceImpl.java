@@ -64,7 +64,7 @@ public class UserServiceImpl implements UserService
 		if(userid != 0)
 		{
 			String sid = Integer.toString(userid) ;
-		    URI uri = UriBuilder.fromPath("/spliteasy/welcome.jsp")
+		    URI uri = UriBuilder.fromPath("/spliteasy/index.jsp")
 		            .queryParam("sid", sid)
 		            .build();
 		    return Response.seeOther(uri).build();
