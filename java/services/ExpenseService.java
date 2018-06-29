@@ -7,4 +7,6 @@ public interface ExpenseService
 	public Response addExpense();
 	public Response removeExpense();
 	public Response updateExpense();
+	public Response deleteExpense();
+
 }

@@ -188,6 +188,18 @@ public class ExpenseServiceImpl {
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	public Response addExpense(@PathParam("gid") int gid, @FormParam("name")String ename,@FormParam("amount")double amount, @FormParam("ratio")List<Integer> ratios) 
 	{
+		String query="select *from user where userid="+UserInfo.userid;
+		ArrayList<Entity> res2=new ArrayList<>();
+		res2=dbUtil.runQuery(query, "user");
+		if(res2.isEmpty())
+		{
+			Message m=new Message();
+			m.setStatus("F");
+			m.setMessage("User not Logged In");
+			return Response.ok()
+					.entity(m)
+						.build();
+		}
 		System.out.println(ratios);
 		if(ename==null || ename.equals(""))
 		{
@@ -228,18 +240,7 @@ public class ExpenseServiceImpl {
 					.entity(m)
 						.build();
 		}
-		String query="select *from user where userid="+UserInfo.userid;
-		ArrayList<Entity> res2=new ArrayList<>();
-		res2=dbUtil.runQuery(query, "user");
-		if(res2.isEmpty())
-		{
-			Message m=new Message();
-			m.setStatus("F");
-			m.setMessage("User not Logged In");
-			return Response.ok()
-					.entity(m)
-						.build();
-		}
+		
 		query="select *from user where userid in (select userid from group_member where grpid="+gid+") and userid="+UserInfo.userid;
 		res2=new ArrayList<>();
 		res2=dbUtil.runQuery(query, "user");
@@ -310,6 +311,47 @@ public class ExpenseServiceImpl {
 					.entity(res)
 					.build();
 	}
+	
+	@DELETE
+	@Path("/{eid}")
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	public Response deleteExpense(@PathParam("gid") String gid , @PathParam("eid") String eid) 
+	{
+		int gId;
+		try {
+			gId=Integer.parseInt(gid);
+		}
+		catch(Exception e)
+		{
+			
+			Message m=new Message();
+			m.setStatus("F");
+			m.setMessage("Something went wrong");
+			return Response.ok()
+					.entity(m)
+						.build();
+		}
+		DbUtil.dbConnection();
+		boolean res2=expenseUtil.deleteExpence(eid, gId);
+		if(res2)
+		{
+			Message m=new Message();
+			m.setStatus("S");
+			m.setMessage("Expense Sucessfully deleted");
+			return Response.ok()
+					.entity(m)
+						.build();
+		}else
+		{
+			Message m=new Message();
+			m.setStatus("F");
+			m.setMessage("Something went wrong");
+			return Response.ok()
+					.entity(m)
+						.build();
+		}
+	}
+	
 }
 	
 	

@@ -14,6 +14,7 @@ import javax.ws.rs.core.UriBuilder;
 import model.MapUserLogin;
 import model.UserInfo;
 import services.UserService;
+import util.GroupUtil;
 import util.UserUtil;
 
 @Path("/")
@@ -21,16 +22,35 @@ public class UserServiceImpl implements UserService
 {
 	UserUtil userutil = new UserUtil();
 	MapUserLogin lMap= new MapUserLogin();
+	GroupUtil grouputil = new GroupUtil();
 	
 	@POST
 	@Path("signup")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	public Response signUp(@FormParam("email") String email, @FormParam("password") String password, @FormParam("name") String name, @FormParam("photo") String photo)
 	{
-		boolean res = userutil.create(name,email,password);
-		URI uri = UriBuilder.fromPath("/spliteasy/login.jsp")
-	            .build();
-	    return Response.seeOther(uri).build();
+		System.out.println("signup");
+		int res = userutil.create(name,email,password);
+		if(res == 1)
+		{
+			URI uri = UriBuilder.fromPath("/spliteasy/login.jsp").build();
+			return Response.seeOther(uri).build();
+		}
+		else
+		if(res == 0)
+		{
+			/*return Response.ok()
+					.entity("Email ID already registered!!")
+					.build();*/
+			URI uri = UriBuilder.fromPath("/spliteasy/signup.jsp").queryParam("q", 0).build();
+			return Response.seeOther(uri).build();
+		}
+		else
+		{
+			return Response.ok()
+					.entity(null)
+					.build();
+		}
 		
 	}
 	
@@ -52,9 +72,7 @@ public class UserServiceImpl implements UserService
 		return Response.ok()
 				.entity("Invalid Credentials!")
 				.build();
-	}
-		
-		
+	}	
 	
 	@POST
 	@Path("updateprofile")
@@ -66,7 +84,7 @@ public class UserServiceImpl implements UserService
 			if(lMap.checkMapData(Integer.toString(id)))
 			{
 				
-			boolean res = userutil.updateUser(name,id);
+			userutil.updateUser(name,id);
 		    URI uri = UriBuilder.fromPath("/spliteasy/hello.jsp")		            
 		            .build();
 		    return Response.seeOther(uri).build();
@@ -75,8 +93,8 @@ public class UserServiceImpl implements UserService
 		return Response.ok()
 				.entity("Errr!")
 				.build();
-
 	}	
+	
 	@POST
 	@Path("changepassword")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
@@ -96,8 +114,8 @@ public class UserServiceImpl implements UserService
 		return Response.ok()
 				.entity("Errr!")
 				.build();
-
 	}	
+	
 	@GET
 	@Path("logout")
 	public Response logout()
@@ -113,8 +131,41 @@ public class UserServiceImpl implements UserService
 		return Response.ok()
 			.entity(null)
 			.build();
-		
 	}	
+	
+	@POST
+	@Path("signmeup")
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	public Response signUpEmail(@FormParam("email") String email, @FormParam("password") String password, @FormParam("name") String name, @FormParam("gid") String gId, @FormParam("photo") String photo)
+	{
+		int res = userutil.create(name,email,password);
+		if(res == 1)
+		{
+			boolean result = grouputil.addMember(email, gId);
+			if(result)
+			{
+				int uID = Integer.parseInt(userutil.findUserid(email));
+				UserInfo.userid = uID;
+				URI uri = UriBuilder.fromPath("/spliteasy/welcome.jsp").queryParam("g", gId).build();
+				return Response.seeOther(uri).build();
+			}
+			else
+				return Response.ok().entity(null).build();
+		}
+		else
+		if(res == 0)
+		{
+			/*return Response.ok()
+					.entity("Email ID already registered!!")
+					.build();*/
+			URI uri = UriBuilder.fromPath("/spliteasy/signup.jsp").queryParam("q", 0).build();
+			return Response.seeOther(uri).build();
+		}
+		else
+		{
+			return Response.ok().entity(null).build();
+		} 
+	}
 	
 }
 

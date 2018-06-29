@@ -82,15 +82,6 @@ public class GroupServiceImpl implements GroupService
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	public Response add(@FormParam("name") String gName, @FormParam("members") List<String> members)
 	{
-		if(gName==null	 || members.size()==0)
-		{
-			Message m=new Message();
-			m.setStatus("F");
-			m.setMessage("One of the paramaters are missing");
-			return Response.ok()
-					.entity(m)
-						.build();
-		}
 		String query="select *from user where userid="+UserInfo.userid;
 		ArrayList<Entity> res2=new ArrayList<>();
 		res2=dbUtil.runQuery(query, "user");
@@ -103,20 +94,41 @@ public class GroupServiceImpl implements GroupService
 					.entity(m)
 						.build();
 		}
+		if(gName.equals("") || gName==null )
+		{
+			Message m=new Message();
+			m.setStatus("F");
+			m.setMessage("Group Name is missing!");
+			return Response.ok()
+					.entity(m)
+						.build();
+		}
+		if(members.size()==0)
+		{
+			Message m=new Message();
+			m.setStatus("F");
+			m.setMessage("Atleast One or more members must be added!");
+			return Response.ok()
+					.entity(m)
+						.build();
+		}
+		for(int i=0;i<members.size();i++)
+		{
+			if(members.get(i).equals(""))
+			{
+				Message m=new Message();
+				m.setStatus("F");
+				m.setMessage("Email Can't Be Empty");
+				return Response.ok()
+						.entity(m)
+							.build();
+			}
+		}
 		System.out.println(gName);
-		boolean res=grouputil.create(gName,Integer.toString(UserInfo.userid),members);
-		if(res)
-		{
-			return Response.ok()
-					.entity(true)
-					.build();
-		}
-		else
-		{
-			return Response.ok()
-					.entity(false)
-					.build();
-		}
+		Message m=grouputil.create(gName,Integer.toString(UserInfo.userid),members);
+		return Response.ok()
+				.entity(m)
+				.build();
 		
 	}
 	
@@ -128,7 +140,7 @@ public class GroupServiceImpl implements GroupService
 	{
 		System.out.println(gId);
 		System.out.println(email);
-		boolean res=grouputil.addMemeber(email, gId);
+		boolean res=grouputil.addMember(email, gId);
 		return Response.ok()
 				.entity(res)
 				.build();
