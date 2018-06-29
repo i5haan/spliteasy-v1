@@ -47,6 +47,7 @@ var loadGroupList=function(data){
 			$(".groupheading").text(data.gname)
 			$("#groupusercreate").text("Created by "+data.user)
 			$("#groupuserdate").text("Create On "+data.created_at.slice(0,10))
+			loadSettleUp(gid)
 			loadExpense(gid)
 	});
 		
@@ -126,7 +127,6 @@ var loadExpense=function(gid){
 				})
 				
 			})
-			loadSettleUp(gid)
 		}
 		
 	});
@@ -222,7 +222,7 @@ function ascrollto(id) {
 
 $(document).ready(function() {  
     $("#Add").on("click", function() {  
-        $("#textboxDiv").append("<div class='form-group'><p class='form-label'>ENTER MEMBER NAME</p><input class='form-control members' name=\"members\" placeholder='Enter the Member Name' type='text'/></div>");  
+        $("#textboxDiv").append("<div class='form-group'><p class='form-label'>ENTER MEMBER EMAIL</p><input class='form-control members' name=\"members\" placeholder='Enter Member Email' type='email'/></div>");  
     });    
 });
 
@@ -248,8 +248,18 @@ $(".btn-group-add").unbind().click(function(){
 		data:$.param(sendData,true),
 		type:"POST",
 		success:function(res){
-			alert(res)
-			init()
+			if(res.status && res.status=="F"){
+				alert(res.message);
+			}
+			else{
+				alert(res.message)
+				$(".gnamesend").val("")
+				$("#textboxDiv").text("")
+				$("#textboxDiv").html("<div class='form-group'><p class='form-label'>ENTER MEMBER EMAIL</p><input class='form-control members' name=\"members\" placeholder='Enter Member Email' type='email'/></div>");  
+
+				init()
+			}
+			
 		}
 	})
 	console.log(sendData)

@@ -56,9 +56,11 @@
                         <input class="form-control gnamesend" type="text" name="name" placeholder="Enter the group Name" required="">
                     </div>
                    <div class="form-group"> 
-                   	<div id="textboxDiv"></div>  
+                   	<div id="textboxDiv">
+                   		<div class='form-group'><p class='form-label'>ENTER MEMBER EMAIL</p><input class='form-control members' name="members" placeholder='Enter Member Email' type='text'/></div>
+                   	</div>  
                    </div>
-                   <div class='form-group'><p class='form-label'>ENTER MEMBER NAME</p><input class='form-control members' name="members" placeholder='Enter the Member Name' type='text'/></div>
+                   
                    <div class="form-group"><button id="Add"><!-- <img  height="42" width="42" src="images/add_member.png" /> --><i class="fas fa-plus"></i></button></div>
                     
                     <div class="form-group">
