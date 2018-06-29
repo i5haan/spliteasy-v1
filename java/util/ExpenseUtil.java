@@ -40,6 +40,10 @@ public class ExpenseUtil {
 	
 	public boolean create(int gid,String ename, int paid_by,double amount, List<Integer> ratios)
 	{
+		if(amount<0)
+		{
+			return false;
+		}
 		DbUtil.dbConnection();
 		System.out.println(paid_by);
 		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
@@ -88,7 +92,7 @@ public class ExpenseUtil {
 		return true;
 	}
 		
-		boolean splitExpence(String eid, ArrayList<Entity> ulist, double amount, int paid_by, int gid, ArrayList<Double> splitAmount) {
+		public boolean splitExpence(String eid, ArrayList<Entity> ulist, double amount, int paid_by, int gid, ArrayList<Double> splitAmount) {
 			   
 			int n = ulist.size();
 //			double splitAmount = amount/n;
