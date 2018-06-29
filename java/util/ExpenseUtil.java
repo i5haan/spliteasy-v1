@@ -320,6 +320,49 @@ public class ExpenseUtil {
 			ulist=dbUtil.runQuery(sql, "group_member");
 			return res;
 		}
+		public boolean deleteExpence(String eId,int gid) {
+			Expense expense=new Expense();
+			Expense expense1=new Expense();
+			ArrayList<Entity> res1=new ArrayList<>();
+			ArrayList<Entity> res2 = new ArrayList<>();
+			ArrayList<Entity> res3=new ArrayList<>();
+			String query1="select *from expense where eid="+eId;
+			String query2="select * from split_expense where eid="+eId;
+			System.out.println(query1);
+			    res1=dbUtil.runQuery(query1, "expense");
+			    res2=dbUtil.runQuery(query2,"split_expense");
+			    
+			    
+			
+			    try {
+			    	expense1 = (Expense)res1.get(0);
+			    }catch(Exception e)
+			    {
+			    	return false;
+			    }
+			    
+			    int paid_by = expense1.getPaid_by();
+			    int n=res2.size();
+			    
+			    BalanceLedger b=new BalanceLedger();
+			    b.setGrpid(gid);
+			    b.setTo(paid_by);
+			    
+			    for(int i=0;i<n;i++) {
+			    
+				    SplitExpense sp = (SplitExpense)res2.get(i);
+				    if(sp.getUserid() != paid_by)
+				    {
+				    	b.setFrom(sp.getUserid());
+					    b.setAmount(-sp.getS_amt());
+					    dbUtil.create(b);
+				    }
+			    }
+			    dbUtil.delete(expense1);
+			    return true;
+			    
+			    
+		}
 		
 		
 		

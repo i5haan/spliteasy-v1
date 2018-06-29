@@ -120,9 +120,10 @@ public class DbUtil
 			try {
 				BalanceLedger ob=(BalanceLedger) obj;
 				sql="insert into balance_ledger values("+ob.getFrom()+","+ob.getTo()+","+ob.getGrpid()+","+ob.getAmount()+") on duplicate key update amount=amount+"+ob.getAmount();
+				System.out.println(sql);
 				PreparedStatement stmt = (DbUtil.con).prepareStatement(sql);
 				stmt.executeUpdate();
-				System.out.println(sql);
+				
 			}catch(Exception e)
 			{
 				System.out.println(e);
@@ -270,5 +271,106 @@ public class DbUtil
 			System.out.println(e);
 		}
 		return resultSet;
+	}
+	
+	public boolean delete(Entity obj)
+	{
+		String sql="";
+		String res=obj.getEntity();
+		System.out.println(res);
+		if(res.equals("groups"))
+		{
+			try {
+				Groups ob=(Groups) obj;
+				sql="delete from groups where grpid ="+ob.getGrpid();
+				PreparedStatement stmt = (DbUtil.con).prepareStatement(sql);
+				stmt.executeUpdate();
+				System.out.println(sql);
+			}catch(Exception e)
+			{
+				System.out.println(e);
+				return false;
+			}
+		
+		}
+		else if(res.equals("user"))
+		{
+			try {
+				User ob=(User) obj;
+				sql="delete from users where userid = "+ob.getUserid();
+				PreparedStatement stmt = (DbUtil.con).prepareStatement(sql);
+				stmt.executeUpdate();
+				System.out.println(sql);
+			}catch(Exception e)
+			{
+				System.out.println(e);
+				return false;
+			}
+		
+		}
+		else if(res.equals("expense"))
+		{
+			
+			try {
+				Expense ob=(Expense) obj;
+				sql="delete from expense where eid = "+ob.getEid()+" AND grpid="+ob.getGrpid();
+				PreparedStatement stmt = (DbUtil.con).prepareStatement(sql);
+				System.out.println(sql);
+				stmt.executeUpdate();
+			}catch(Exception e)
+			{
+				System.out.println(e);
+				return false;
+			}
+		
+		}
+		else if(res.equals("group_member"))
+		{
+			try {
+				GroupMembers ob=(GroupMembers) obj;
+				sql="delete from groups where grpid = "+ob.getgId()+" AND userid ="+ob.getuserId();
+				PreparedStatement stmt = (DbUtil.con).prepareStatement(sql);
+				stmt.executeUpdate();
+				System.out.println(sql);
+			}catch(Exception e)
+			{
+				System.out.println(e);
+				return false;
+			}
+		
+		}
+		else if(res.equals("split_expense"))
+		{
+			try {
+				System.out.println("Yaay");
+				SplitExpense ob=(SplitExpense) obj;
+				sql="delete from groups where eid = "+ob.getEid()+" AND userid ="+ob.getUserid();
+				PreparedStatement stmt = (DbUtil.con).prepareStatement(sql);
+				stmt.executeUpdate();
+				System.out.println(sql);
+			}catch(Exception e)
+			{
+				System.out.println(e);
+				return false;
+			}
+		
+		}
+		else if(res.equals("balance_ledger"))
+		{
+			try {
+				BalanceLedger ob=(BalanceLedger) obj;
+				sql="delete from groups where fromUser = "+ob.getFrom()+" AND toUser ="+ob.getTo()+" AND grpid"+ob.getGrpid();
+				System.out.println(sql);
+				PreparedStatement stmt = (DbUtil.con).prepareStatement(sql);
+				stmt.executeUpdate();
+				
+			}catch(Exception e)
+			{
+				System.out.println(e);
+				return false;
+			}
+		}
+		
+		return true;
 	}
 }

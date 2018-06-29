@@ -3,10 +3,6 @@ package util;
 import util.DbUtil;
 
 import java.sql.CallableStatement;
-import java.sql.Statement;
-
-import javax.ws.rs.core.Response;
-
 import model.MapUserLogin;
 import model.UserInfo;
 
@@ -16,25 +12,45 @@ import java.sql.ResultSet;
 public class UserUtil 
 {
 	MapUserLogin mapData=new MapUserLogin();
+	DbUtil dbUtil=new DbUtil();
+	
 	public UserUtil()
 	{
 		DbUtil.dbConnection();
 	}
 
-	public boolean create(String name, String email, String pswd)
+	public int create(String name, String email, String pswd)
 	{
-		String sql="{call register(?,?,?,null)}";
-		try {
-			CallableStatement stmt = (CallableStatement) (DbUtil.con).prepareCall(sql);
-			stmt.setString(1, email);
-			stmt.setString(2, name);
-			stmt.setString(3, pswd);
-			stmt.executeUpdate();
-			stmt.close();
-			return true;
+		String sql="select count(*) from login where email=?";
+		try
+		{
+			PreparedStatement pstmt = (DbUtil.con).prepareStatement(sql);
+			pstmt.setString(1, email);
+			ResultSet rs = pstmt.executeQuery();
+			int count = 0;
+			if(rs.next())
+			{
+				count = rs.getInt(1);
+			}
+			if(count == 0)
+			{
+				sql="{call register(?,?,?,null)}";
+		
+				CallableStatement stmt = (CallableStatement) (DbUtil.con).prepareCall(sql);
+				stmt.setString(1, email);
+				stmt.setString(2, name);
+				stmt.setString(3, pswd);
+				stmt.executeUpdate();
+				stmt.close();
+				return 1;
+			}
+			else
+			{
+				return 0;
+			}
 		}catch(Exception e) {
 			System.out.println(e);
-			return false;
+			return -1;
 		}
 	}
 	
@@ -146,10 +162,13 @@ public class UserUtil
 	{
 		boolean res = mapData.removeMapData(UserInfo.userid+"");
 		UserInfo.userid = 0;
-		return res;
-		
+		return res;		
 	}
-	
-	
-	
+
+	public String findUserid(String email) 
+	{
+		String uID = dbUtil.findOneColumn("userid", "user", "email", email);
+		System.out.println(uID);
+		return uID;
+	}
 }
