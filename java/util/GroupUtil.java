@@ -167,6 +167,7 @@ public class GroupUtil
 			gm.setgId(gId);
 			gm.setuserId(userId);
 			boolean res1 =  dbUtil.delete(gm);
+			
 			if(res1)
 			{
 				m.setMessage("Member Deleted Succesfully");
