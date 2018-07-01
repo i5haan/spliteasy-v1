@@ -74,11 +74,28 @@
             <div class="thumbnail">
               <div class="caption-full">
               <button class="eformtoggle btn btn-success pull-right hide">Add Expense</button>
-              <button class="settleuptoggle btn btn-danger pull-right hide">Settle Up</button>
+              <button class="settleuptoggle btn btn-primary pull-right hide">Settle Up</button>
+              <button class="deletegroup btn btn-danger pull-right hide">Delete This Group</button>
                 <h2 class="groupheading">Select a Group from the List!!</h2>
                 
                 <h4><em><span id="groupusercreate"></span></em></h4>
                 <p><span id="groupuserdate"></span></p>
+                <div class="memberlist">
+                	
+                </div>
+                <div>
+                	<div class="addmemberinputform hide">
+                		<p class="form-label">Member Email</p>
+	                	<div class="form-group">
+	                		<input type="text" class="form-control addmemberinput" placeholder="Enter New Members Email!">
+	                	</div>
+	                	<div class="form-group">
+	                		<button class="btn btn-lg btn-success btn-xs btn-group-member-add"><b>SUBMIT</b></button>
+	                	</div>
+                		
+                        
+                    </div>
+                </div>
               </div>
 
             </div>

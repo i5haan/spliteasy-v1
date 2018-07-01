@@ -1,11 +1,24 @@
-$(".f-container").fadeOut(0)
-$(".gf-container").fadeOut(0)
 var gid;
 document.querySelector("div.expensefocus").addEventListener("click",function(){
 				$("div.expensefocus").addClass("hide")
 			})
 			
 var init=function(){
+	
+	$(".groupheading").text("Select a Group from the List!!")
+	$("#groupusercreate").text("")
+	$("#groupuserdate").text("")
+	$(".memberlist").text("")
+	$("div.addmemberinputform").addClass("hide")
+	$(".eformtoggle").addClass("hide")
+	$(".settleuptoggle").addClass("hide")
+	$(".deletegroup").addClass("hide")
+	
+	$(".settleupfocus").addClass("hide")
+	$(".noexpense").addClass("hide")
+	$(".expensepanel").addClass("hide")
+	$(".f-container").fadeOut(0)
+	$(".gf-container").fadeOut(0)
 	$("div.list-group").text("")
 	$.get("/spliteasy/webapi/group",function(data){
 		
@@ -37,23 +50,8 @@ var loadGroupList=function(data){
 		$(".settleupfocus").addClass("hide")
 		$(".f-container").fadeOut(0)
 		gid=$(this).attr("value")
-		$.get("/spliteasy/webapi/group/"+gid,function(data){
-			$(".eformtoggle").removeClass("hide")
-			$(".settleuptoggle").removeClass("hide")
-			$("#splitmember").html('<span class="col"><b>MEMBERS</b></span><span class="col"><b>SHARE</b></span><br>')
-			$(".noexpense").addClass("hide")
-			$(".expensepanel").addClass("hide")
-			$(".expensefocus").addClass("hide")
-			$(".groupheading").text(data.gname)
-			$("#groupusercreate").text("Created by "+data.user)
-			$("#groupuserdate").text("Create On "+data.created_at.slice(0,10))
-			ascrollto("caption-full")
-			loadSettleUp(gid)
-			loadExpense(gid)
-	});
-		
-		
-	loadForm(gid);
+		loadGroup(gid)
+		loadForm(gid)
 	})
 }
 		
@@ -62,7 +60,58 @@ var loadGroupList=function(data){
 		
 $(".eformtoggle").unbind().click(function(){
 	$(".f-container").fadeToggle(500)
+	ascrollto("f-container")
 })
+
+var loadGroup=function(gid){
+	$.get("/spliteasy/webapi/group/"+gid,function(data){
+		$(".eformtoggle").removeClass("hide")
+		$(".settleuptoggle").removeClass("hide")
+		$(".deletegroup").removeClass("hide")
+		$("#splitmember").html('<span class="col"><b>MEMBERS</b></span><span class="col"><b>SHARE</b></span><br>')
+		$(".noexpense").addClass("hide")
+		$(".expensepanel").addClass("hide")
+		$(".expensefocus").addClass("hide")
+		$(".groupheading").text(data.gname)
+		$("#groupusercreate").text("Created by "+data.user)
+		$("#groupuserdate").text("Create On "+data.created_at.slice(0,10))
+		$(".memberlist").text("")
+		$(".memberlist").append("<p><strong>Group Members List</strong></p>")
+		data.member.forEach(function(m){
+			$(".memberlist").append("<p><span class='colm'>"+m.name+"</span><span class='colm'><button class='btn btn-xs btn-danger btn-remove-group-member' data='"+m.userid+"' route='/spliteasy/webapi/group/"+gid+"/user'>Delete This member</button></span></p>")
+		})
+		$(".btn-remove-group-member").unbind().click(function(){
+			var p=confirm("Removing a member can't be undone. Are you sure?")
+			if(p){
+				var route=$(this).attr("route")
+				var data="uid="+$(this).attr("data")
+				$.ajax({
+					url:route,
+					type:"DELETE",
+					data:data,
+					success:function(res){
+						if(res.status && res.status=="F"){
+							alert(res.message)
+						}
+						else{
+							alert(res.message)
+							init()
+						}
+					}
+				})
+			}
+		})
+		$
+		$(".memberlist").append("<button class='btn btn-xs addmembertoggle'>Add a member</button>")
+		$("div.addmemberinputform").addClass("hide")
+		$(".addmembertoggle").unbind().click(function(){
+			$("div.addmemberinputform").toggleClass("hide")
+		})
+		ascrollto("caption-full")
+		loadSettleUp(gid)
+		loadExpense(gid)
+});
+}
 
 var loadForm=function(gid){
 	$.get("/spliteasy/webapi/group/"+gid,function(group){
@@ -111,6 +160,7 @@ var loadExpenseInfo =function(gid,id){
 }
 
 var loadExpense=function(gid){
+
 	$.get("/spliteasy/webapi/group/"+gid+"/expense",function(data){
 		if(data.length==0){
 			$("div.noexpense").removeClass("hide")
@@ -221,8 +271,13 @@ $(".expensesubmit").unbind().click(function(){
 					$(".f-container").fadeOut(0)
 					$(".ename").val("")
 					$(".eamount").val("")
+					$(".noexpense").addClass("hide")
+					$(".ratio").each(function(){
+						$(this).val(1)
+					})
 					loadExpense(gid)
 					loadSettleUp(gid)
+					$(".noexpense").addClass("hide")
 				}
 		}
 	})
@@ -249,6 +304,7 @@ $(document).ready(function() {
 
 $(".settleuptoggle").unbind().click(function(){
 	$(".settleupfocus").toggleClass("hide")
+	ascrollto("settleupfocus")
 })
 
 $(".btn-group-add").unbind().click(function(){
@@ -284,6 +340,49 @@ $(".btn-group-add").unbind().click(function(){
 	})
 	console.log(sendData)
 	console.log(route)
+})
+
+$("button.btn-group-member-add").unbind().click(function(){
+	var route="/spliteasy/webapi/group/"+gid+"/member"
+	var email=$(".addmemberinput").val()
+	console.log(route)
+	console.log(email)
+	$.ajax({
+		url:route,
+		data:"email="+email,
+		type:"POST",
+		success:function(res){
+			if(res.status && res.status=="F"){
+				alert(res.message);
+			}
+			else{
+				alert(res.message)
+				$
+				loadGroup(gid)
+				loadForm(gid)
+			}
+			
+		}
+	})
+})
+
+$(".deletegroup").unbind().click(function(){
+	var p=confirm("Are you sure, the group info would be lost and can't be recovered back!")
+	if(p){
+		$.ajax({
+			type:"DELETE",
+			url:"/spliteasy/webapi/group/"+gid,
+			success:function(res){
+				if(res.status && res.status=="F"){
+					alert(res.message)
+				}
+				else{
+					alert(res.message)
+					init()
+				}
+			}
+		})
+	}
 })
 
 init()

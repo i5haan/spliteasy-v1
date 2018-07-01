@@ -152,6 +152,13 @@ a
 	padding:5%;
 }
 
+.colm
+{
+	width:24.5%;
+	display:inline-block;
+	padding:1%;
+}
+
 .container
 {
 	paddin-bottom:20px;
@@ -173,6 +180,15 @@ a
 .fa-money-bill-wave:before
 {
 	margin-right:4px;
+}
+.addmemberinputform
+{
+	width:25%;
+}
+
+button
+{
+	margin:2px;
 }
 
 
