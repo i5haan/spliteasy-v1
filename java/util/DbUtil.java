@@ -328,10 +328,11 @@ public class DbUtil
 		{
 			try {
 				GroupMembers ob=(GroupMembers) obj;
-				sql="delete from groups where grpid = "+ob.getgId()+" AND userid ="+ob.getuserId();
+				sql="delete from group_member where grpid = "+ob.getgId()+" AND userid ="+ob.getuserId();
+				System.out.println(sql);
 				PreparedStatement stmt = (DbUtil.con).prepareStatement(sql);
 				stmt.executeUpdate();
-				System.out.println(sql);
+				
 			}catch(Exception e)
 			{
 				System.out.println(e);
@@ -344,7 +345,7 @@ public class DbUtil
 			try {
 				System.out.println("Yaay");
 				SplitExpense ob=(SplitExpense) obj;
-				sql="delete from groups where eid = "+ob.getEid()+" AND userid ="+ob.getUserid();
+				sql="delete from split_expense where eid = "+ob.getEid()+" AND userid ="+ob.getUserid();
 				PreparedStatement stmt = (DbUtil.con).prepareStatement(sql);
 				stmt.executeUpdate();
 				System.out.println(sql);
@@ -359,7 +360,7 @@ public class DbUtil
 		{
 			try {
 				BalanceLedger ob=(BalanceLedger) obj;
-				sql="delete from groups where fromUser = "+ob.getFrom()+" AND toUser ="+ob.getTo()+" AND grpid"+ob.getGrpid();
+				sql="delete from balance_ledger where fromUser="+ob.getFrom()+" AND toUser="+ob.getTo()+" AND grpid="+ob.getGrpid();
 				System.out.println(sql);
 				PreparedStatement stmt = (DbUtil.con).prepareStatement(sql);
 				stmt.executeUpdate();

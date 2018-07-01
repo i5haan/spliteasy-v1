@@ -1,6 +1,7 @@
 package servicesImpl;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.PathParam;
@@ -138,11 +139,56 @@ public class GroupServiceImpl implements GroupService
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	public Response addMember(@PathParam("id") String gId, @FormParam("email") String email)
 	{
+		if(email==null || email.equals("") || email.equals("null"))
+		{
+			Message m=new Message();
+			m.setStatus("F");
+			m.setMessage("Email Cannto be null");
+			return Response.ok()
+					.entity(m)
+						.build();
+		}
+		String query1="select *from user where userid="+UserInfo.userid;
+		ArrayList<Entity> res2=new ArrayList<>();
+		res2=dbUtil.runQuery(query1, "user");
+		if(res2.isEmpty())
+		{
+			Message m=new Message();
+			m.setStatus("F");
+			m.setMessage("User not Logged In");
+			return Response.ok()
+					.entity(m)
+						.build();
+		}
+		query1="select *from user where userid in (select userid from group_member where grpid="+gId+") and userid="+UserInfo.userid;
+		res2=new ArrayList<>();
+		res2=dbUtil.runQuery(query1, "user");
+		if(res2.isEmpty())
+		{
+			Message m=new Message();
+			m.setStatus("F");
+			m.setMessage("Not Authorized");
+			return Response.ok()
+					.entity(m)
+						.build();
+		}
+		Message m=new Message();
+		
 		System.out.println(gId);
 		System.out.println(email);
 		boolean res=grouputil.addMember(email, gId);
+		if(res)
+		{
+			m.setStatus("S");
+			m.setMessage("Member Added Succesfully");
+		}
+		else
+		{
+			m.setStatus("F");
+			m.setMessage("Member Added could not be added");
+		}
 		return Response.ok()
-				.entity(res)
+				.entity(m)
 				.build();
 	}
 	
@@ -194,5 +240,106 @@ public class GroupServiceImpl implements GroupService
 				.entity(tempGroup)
 				.build();
 	}
+	
+	@DELETE
+	@Path("/{id}/user")
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	public Response deleteMember(@PathParam("id") String gid, @FormParam("uid") String userid)
+	{
+		String query1="select *from user where userid="+UserInfo.userid;
+		ArrayList<Entity> res2=new ArrayList<>();
+		res2=dbUtil.runQuery(query1, "user");
+		if(res2.isEmpty())
+		{
+			Message m=new Message();
+			m.setStatus("F");
+			m.setMessage("User not Logged In");
+			return Response.ok()
+					.entity(m)
+						.build();
+		}
+		query1="select *from user where userid in (select userid from group_member where grpid="+gid+") and userid="+UserInfo.userid;
+		res2=new ArrayList<>();
+		res2=dbUtil.runQuery(query1, "user");
+		if(res2.isEmpty())
+		{
+			Message m=new Message();
+			m.setStatus("F");
+			m.setMessage("Not Authorized");
+			return Response.ok()
+					.entity(m)
+						.build();
+		}
+		System.out.println(gid);
+		Message m=new Message();
+		try {
+			Integer.parseInt(gid);
+		}catch(Exception e)
+		{
+			m.setMessage("Invalid Group Id");
+			m.setStatus("F");
+			return Response.ok().entity(m).build();
+		}
+		
+		try {
+			Integer.parseInt(userid);
+		}catch(Exception e)
+		{
+			m.setMessage("Invalid User Id");
+			m.setStatus("F");
+			return Response.ok().entity(m).build();
+		}
+		Message res=grouputil.deleteMemeber(gid, userid);
+		return Response.ok().entity(res).build();
+		
+		
+	}
+	
+	@DELETE
+	@Path("{id}")
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	public Response deleteGroup(@PathParam("id") String gid)
+	{
+		String query1="select *from user where userid="+UserInfo.userid;
+		ArrayList<Entity> res2=new ArrayList<>();
+		res2=dbUtil.runQuery(query1, "user");
+		if(res2.isEmpty())
+		{
+			Message m=new Message();
+			m.setStatus("F");
+			m.setMessage("User not Logged In");
+			return Response.ok()
+					.entity(m)
+						.build();
+		}
+		query1="select *from user where userid in (select userid from group_member where grpid="+gid+") and userid="+UserInfo.userid;
+		res2=new ArrayList<>();
+		res2=dbUtil.runQuery(query1, "user");
+		if(res2.isEmpty())
+		{
+			Message m=new Message();
+			m.setStatus("F");
+			m.setMessage("Not Authorized");
+			return Response.ok()
+					.entity(m)
+						.build();
+		}
+		System.out.println(gid);
+		Message m=new Message();
+		try {
+			Integer.parseInt(gid);
+		}catch(Exception e)
+		{
+			m.setMessage("Invalid Group Id");
+			m.setStatus("F");
+			return Response.ok().entity(m).build();
+		}
+		
+		Message res=grouputil.deleteGroup(gid);
+		return Response.ok().entity(res).build();
+	}
+	
+	
+	
 	
 }
