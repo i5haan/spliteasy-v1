@@ -69,9 +69,9 @@ public class UserServiceImpl implements UserService
 		            .build();
 		    return Response.seeOther(uri).build();
 		}
-		return Response.ok()
-				.entity("Invalid Credentials!")
-				.build();
+		URI uri = UriBuilder.fromPath("/spliteasy/login.jsp")
+	            .build();
+		return Response.seeOther(uri).build();
 	}	
 	
 	@POST

@@ -65,10 +65,12 @@ $(".eformtoggle").unbind().click(function(){
 })
 
 var loadGroup=function(gid){
+	
 	$.get("/spliteasy/webapi/group/"+gid,function(data){
 		$(".total").text("")
 		$(".paid").text("")
 		$(".share").text("")
+		loadGroupStats(gid)
 		$(".eformtoggle").removeClass("hide")
 		$(".settleuptoggle").removeClass("hide")
 		$(".deletegroup").removeClass("hide")
@@ -113,13 +115,13 @@ var loadGroup=function(gid){
 			$("div.addmemberinputform").toggleClass("hide")
 		})
 		ascrollto("caption-full")
-		loadGroupStats(gid)
+		
 		loadSettleUp(gid)
 		loadExpense(gid)
 });
 }
 var loadGroupStats=function(gid){
-	$.get("http://localhost:8080/spliteasy/webapi/group/"+gid+"/groupstats",function(data){
+	$.get("/spliteasy/webapi/group/"+gid+"/groupstats",function(data){
 		$(".total").text("Total Group Expense are Rs "+data.total)
 		$(".paid").text("You have paid in total Rs "+data.totaluserpaid)
 		$(".share").text("You have a share of Rs "+data.totalusershare)

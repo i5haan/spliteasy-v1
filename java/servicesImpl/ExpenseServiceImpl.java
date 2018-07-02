@@ -188,6 +188,15 @@ public class ExpenseServiceImpl {
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	public Response addExpense(@PathParam("gid") int gid, @FormParam("name")String ename,@FormParam("amount")double amount, @FormParam("ratio")List<Integer> ratios) 
 	{
+		if(Double.isNaN(amount))
+		{
+			Message m=new Message();
+			m.setStatus("F");
+			m.setMessage("Amount cannot be a character");
+			return Response.ok()
+					.entity(m)
+						.build();
+		}
 		String query="select *from user where userid="+UserInfo.userid;
 		ArrayList<Entity> res2=new ArrayList<>();
 		res2=dbUtil.runQuery(query, "user");

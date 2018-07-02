@@ -20,9 +20,9 @@ public class DbUtil
 	public static Connection con = null;
 	public 	static void dbConnection()
 	{
-		String url = "jdbc:mysql://mydbinstance.c8zp6prt4jpm.ap-south-1.rds.amazonaws.com:3306/spliteasy";
-		String username = "i5haan";
-		String password = "12345678";
+		String url = "jdbc:mysql://localhost:3306/spliteasy";
+		String username = "root";
+		String password = "pwd";
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 			con = DriverManager.getConnection(url, username, password);
@@ -38,7 +38,7 @@ public class DbUtil
 	{
 		String sql="";
 		String res=obj.getEntity();
-		System.out.println(res);
+//		System.out.println(res);
 		if(res.equals("groups"))
 		{
 			try {
@@ -46,7 +46,7 @@ public class DbUtil
 				sql="insert into groups values("+ob.getGrpid()+","+ob.getCuserid()+",'"+ob.getGname()+"','"+ob.getCreated_at()+"')";
 				PreparedStatement stmt = (DbUtil.con).prepareStatement(sql);
 				stmt.executeUpdate();
-				System.out.println(sql);
+//				System.out.println(sql);
 			}catch(Exception e)
 			{
 				System.out.println(e);
@@ -61,7 +61,7 @@ public class DbUtil
 				sql="insert into user values("+ob.getUserid()+",'"+ob.getName()+"','"+ob.getEmail()+"','"+ob.getPhoto()+"')";
 				PreparedStatement stmt = (DbUtil.con).prepareStatement(sql);
 				stmt.executeUpdate();
-				System.out.println(sql);
+//				System.out.println(sql);
 			}catch(Exception e)
 			{
 				System.out.println(e);
@@ -76,7 +76,7 @@ public class DbUtil
 				sql="insert into expense values("+ob.getEid()+","+ob.getGrpid()+",'"+ob.getEname()+"','"+ob.getCreated_at()+"',"+ob.getPaid_by()+","+ob.getAmount()+")";
 				PreparedStatement stmt = (DbUtil.con).prepareStatement(sql);
 				stmt.executeUpdate();
-				System.out.println(sql);
+//				System.out.println(sql);
 			}catch(Exception e)
 			{
 				System.out.println(e);
@@ -91,7 +91,7 @@ public class DbUtil
 				sql="insert into group_member values("+ob.getgId()+","+ob.getuserId()+")";
 				PreparedStatement stmt = (DbUtil.con).prepareStatement(sql);
 				stmt.executeUpdate();
-				System.out.println(sql);
+//				System.out.println(sql);
 			}catch(Exception e)
 			{
 				System.out.println(e);
@@ -102,12 +102,12 @@ public class DbUtil
 		else if(res.equals("split_expense"))
 		{
 			try {
-				System.out.println("Yaay");
+//				System.out.println("Yaay");
 				SplitExpense ob=(SplitExpense) obj;
 				sql="insert into split_expense values("+ob.getEid()+","+ob.getUserid()+","+ob.getS_amt()+",'"+ob.getType()+"')";
 				PreparedStatement stmt = (DbUtil.con).prepareStatement(sql);
 				stmt.executeUpdate();
-				System.out.println(sql);
+//				System.out.println(sql);
 			}catch(Exception e)
 			{
 				System.out.println(e);
@@ -120,7 +120,7 @@ public class DbUtil
 			try {
 				BalanceLedger ob=(BalanceLedger) obj;
 				sql="insert into balance_ledger values("+ob.getFrom()+","+ob.getTo()+","+ob.getGrpid()+","+ob.getAmount()+") on duplicate key update amount=amount+"+ob.getAmount();
-				System.out.println(sql);
+//				System.out.println(sql);
 				PreparedStatement stmt = (DbUtil.con).prepareStatement(sql);
 				stmt.executeUpdate();
 				
@@ -139,7 +139,7 @@ public class DbUtil
 		String sql="";
 		try {
 			sql="select "+colName+" from "+entity+" where "+key+"='"+value+"'";
-			System.out.println(sql);
+//			System.out.println(sql);
 			Statement stmt = con.createStatement();
 			ResultSet rs=stmt.executeQuery(sql);
 			if(rs.next())
@@ -161,7 +161,7 @@ public class DbUtil
 		String sql="";
 		try {
 			sql="select "+colName+" from "+entity+" where "+key+"="+value+"";
-			System.out.println(sql);
+//			System.out.println(sql);
 			Statement stmt = con.createStatement();
 			ResultSet rs=stmt.executeQuery(sql);
 			if(rs.next())
@@ -178,16 +178,16 @@ public class DbUtil
 	
 	public ArrayList<Entity> runQuery(String query,String entity)
 	{
-		System.out.println(entity);
-		System.out.println(query);
+//		System.out.println(entity);
+//		System.out.println(query);
 		
 		ArrayList<Entity> resultSet=new ArrayList<>();
 		try {
-			System.out.println(entity.equals("group_member"));
-			System.out.println(DbUtil.con);
+//			System.out.println(entity.equals("group_member"));
+//			System.out.println(DbUtil.con);
 			dbConnection();
 			Statement stmt = (DbUtil.con).createStatement();
-			System.out.println(entity.equals("group_member"));
+//			System.out.println(entity.equals("group_member"));
 			ResultSet rs=stmt.executeQuery(query);
 			if(entity.equals("user"))
 			{
@@ -244,7 +244,7 @@ public class DbUtil
 			}
 			else if(entity.equals("group_member"))
 			{
-				System.out.println("Reached here");
+//				System.out.println("Reached here");
 				while(rs.next())
 				{
 					GroupMembers tEntity=new GroupMembers();
@@ -257,7 +257,7 @@ public class DbUtil
 			{
 				while(rs.next())
 				{
-					System.out.println("Yaay");
+//					System.out.println("Yaay");
 					SplitExpense tEntity=new SplitExpense();
 					tEntity.setEid(rs.getInt("eid"));
 					tEntity.setS_amt(rs.getDouble("s_amt"));
@@ -277,7 +277,7 @@ public class DbUtil
 	{
 		String sql="";
 		String res=obj.getEntity();
-		System.out.println(res);
+//		System.out.println(res);
 		if(res.equals("groups"))
 		{
 			try {
@@ -285,7 +285,7 @@ public class DbUtil
 				sql="delete from groups where grpid ="+ob.getGrpid();
 				PreparedStatement stmt = (DbUtil.con).prepareStatement(sql);
 				stmt.executeUpdate();
-				System.out.println(sql);
+//				System.out.println(sql);
 			}catch(Exception e)
 			{
 				System.out.println(e);
@@ -300,7 +300,7 @@ public class DbUtil
 				sql="delete from users where userid = "+ob.getUserid();
 				PreparedStatement stmt = (DbUtil.con).prepareStatement(sql);
 				stmt.executeUpdate();
-				System.out.println(sql);
+//				System.out.println(sql);
 			}catch(Exception e)
 			{
 				System.out.println(e);
@@ -315,7 +315,7 @@ public class DbUtil
 				Expense ob=(Expense) obj;
 				sql="delete from expense where eid = "+ob.getEid()+" AND grpid="+ob.getGrpid();
 				PreparedStatement stmt = (DbUtil.con).prepareStatement(sql);
-				System.out.println(sql);
+//				System.out.println(sql);
 				stmt.executeUpdate();
 			}catch(Exception e)
 			{
@@ -329,7 +329,7 @@ public class DbUtil
 			try {
 				GroupMembers ob=(GroupMembers) obj;
 				sql="delete from group_member where grpid = "+ob.getgId()+" AND userid ="+ob.getuserId();
-				System.out.println(sql);
+//				System.out.println(sql);
 				PreparedStatement stmt = (DbUtil.con).prepareStatement(sql);
 				stmt.executeUpdate();
 				
@@ -348,7 +348,7 @@ public class DbUtil
 				sql="delete from split_expense where eid = "+ob.getEid()+" AND userid ="+ob.getUserid();
 				PreparedStatement stmt = (DbUtil.con).prepareStatement(sql);
 				stmt.executeUpdate();
-				System.out.println(sql);
+//				System.out.println(sql);
 			}catch(Exception e)
 			{
 				System.out.println(e);
@@ -361,7 +361,7 @@ public class DbUtil
 			try {
 				BalanceLedger ob=(BalanceLedger) obj;
 				sql="delete from balance_ledger where fromUser="+ob.getFrom()+" AND toUser="+ob.getTo()+" AND grpid="+ob.getGrpid();
-				System.out.println(sql);
+//				System.out.println(sql);
 				PreparedStatement stmt = (DbUtil.con).prepareStatement(sql);
 				stmt.executeUpdate();
 				

@@ -71,7 +71,8 @@
         			password:"<b><font color='#7f0000' face='Arial Black'>Please enter your password</b>" 
         		}
         	});
-        });        
+        });
+
         </script>
     
         </div>
