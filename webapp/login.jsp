@@ -52,7 +52,7 @@
                         <button class="btn btn-lg btn-success btn-block">Login</button>
                     </div>
                 </form>
-                <a href="/" class="btn btn-lg btn-default btn-block">Go Back</a>
+                <!-- <a href="/" class="btn btn-lg btn-default btn-block">Go Back</a> -->
             </div>
 
     <script>

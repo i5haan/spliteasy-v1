@@ -64,7 +64,7 @@ public class UserServiceImpl implements UserService
 		if(userid != 0)
 		{
 			String sid = Integer.toString(userid) ;
-		    URI uri = UriBuilder.fromPath("/spliteasy/index.jsp")
+		    URI uri = UriBuilder.fromPath("/spliteasy/welcome.jsp")
 		            .queryParam("sid", sid)
 		            .build();
 		    return Response.seeOther(uri).build();
@@ -85,7 +85,7 @@ public class UserServiceImpl implements UserService
 			{
 				
 			userutil.updateUser(name,id);
-		    URI uri = UriBuilder.fromPath("/spliteasy/hello.jsp")		            
+		    URI uri = UriBuilder.fromPath("/spliteasy/welcome.jsp")		            
 		            .build();
 		    return Response.seeOther(uri).build();
 		}
@@ -105,7 +105,7 @@ public class UserServiceImpl implements UserService
 			boolean res = userutil.changePassword(id,password,npassword,cpassword);
 			if(res){
 			String sid = Integer.toString(id) ;
-		    URI uri = UriBuilder.fromPath("/spliteasy/hello.jsp")
+		    URI uri = UriBuilder.fromPath("/spliteasy/welcom.jsp")
 		    		.queryParam("sid", sid)
 		            .build();
 		    return Response.seeOther(uri).build();

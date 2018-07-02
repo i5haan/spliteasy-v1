@@ -32,8 +32,8 @@
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
               <ul class="nav navbar-nav navbar-right">
-                <li><a href="#">Account</a></li>
-                <li><a href="/spliteasy/webapi/logout">Logout</a></li>
+                <li><a href="/spliteasy/changepassword.jsp">CHANGE PASSWORD</a></li>
+                <li><a href="/spliteasy/webapi/logout">LOGOUT</a></li>
               </ul>
             </div><!-- /.navbar-collapse -->
           </div><!-- /.container-fluid -->
@@ -170,7 +170,7 @@
             
             <div class="well hide noexpense">
               <div class="text-center">
-                <h3>It seems you are having a boring life :P</h3>
+                <h3>You Don't Have Any Expense</h3>
               </div>
               <hr>
             </div>
