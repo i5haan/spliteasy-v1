@@ -6,9 +6,11 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
         <link rel="stylesheet" type="text/css" href="stylesheet/app.css">
         <script
-          src="https://code.jquery.com/jquery-3.3.1.min.js"
+          src="js/jquery-3.3.1.min.js"
           integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
           crossorigin="anonymous"></script>
+	<script src="js/jquery.validate.min.js"></script>
+
         </head>
     <body><strong><font color="red"><center>
     <%
@@ -41,36 +43,75 @@
         <div class="container">
             <h1 class="form-heading">Sign Up</h1>
             <div class="form-container">
-                <form method="post" action="/spliteasy/webapi/signup">
+            
+            <% if(request.getParameter("g")==null) { %>
+                <form method="post" id="form1" action="/spliteasy/webapi/signup">
+            <% } else { %>
+           		<form method="post" id="form1" action="/spliteasy/webapi/signmeup">
+           		<input type = "hidden" name="gid" value="<%=request.getParameter("g")%>" >
+           		<% } %>
                     <div class="form-group">
                         <p class="form-label">Name</p>
-                        <input class="form-control" type="text" name="name" placeholder="Name" required="">
+                        <input class="form-control" type="text" name="name" placeholder="Name"  >
                     </div>
                     <div class="form-group">
                         <p class="form-label">Email</p>
-                        <input class="form-control" type="email" name="email" placeholder="Email Address" required="">
+                        <input class="form-control" type="text" name="email" placeholder="Email Address"  >
                     </div>
                     <div class="form-group">
                         <p class="form-label">Password</p>
-                        <input class="form-control" type="password" name="password" placeholder="New Password" required="">
+                        <input class="form-control" type="password" name="password" id="password" placeholder="New Password"  >
                     </div>
                     <div class="form-group">
                         <p class="form-label">Re-type Password</p>
-                        <input class="form-control" type="password" name="passwordretype" placeholder="Retype Password" required="">
+                        <input class="form-control" type="password" name="passwordretype" placeholder="Retype Password"  >
                     </div>
                     <div class="form-group">
-                        <p class="form-label">Photo</p>
-                        <input class="form-control" type="text" name="photo" placeholder="Photo URL">
-                    </div>
-                    <div class="form-group">
-                        <button class="btn btn-lg btn-success btn-block">Submit</button>
+                        <button  type="submit" class="btn btn-lg btn-success btn-block">Submit</button>
                     </div>
                 </form>
                 <a href="/" class="btn btn-lg btn-default btn-block">Go Back</a>
             </div>
+             </div>
+            <script>
     
-    
-        </div>
+    $(document).ready(function(){
+        	$("#form1").validate({
+        		rules: {
+				name:{
+        				required: true
+        			},
+				email:{
+        				required: true
+        			},
+        			password:{
+        				required: true,
+					minlength:5
+        			},
+        			passwordretype:{
+        				required:true,
+					minlength:5,
+					equalTo:"#password"
+        			}
+        		},
+        		messages:{
+				name:"<b><font color='#7f0000' face='Arial Black'>Please enter your Name</b>" ,
+				email:"<b><font color='#7f0000' face='Arial Black'>Please enter your a valid email address</b>" ,
+        			password:
+				{
+					required:"<b><font color='#7f0000' face='Arial Black'>Please enter your password</b>",
+					minlength:"<b><font color='#7f0000' face='Arial Black'>Password should must be 5 char long</b>" ,
+				} ,
+        			passwordretype:{
+        				required:"<b><font color='#7f0000' face='Arial Black'>Please enter your confirm password</b>",
+					minlength:"<b><font color='#7f0000' face='Arial Black'>Password should must be 5 char long</b>" ,
+        				equalTo:"<b><font color='#7f0000' face='Arial Black'>New and confirm password doesnot match</b>"
+        			}
+        		}
+        	});
+        });   
+    </script>
+       
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
         <p class="bottom">Trademark SplitEasy</p> 
     </body>

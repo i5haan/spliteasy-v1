@@ -146,7 +146,7 @@ public class UserServiceImpl implements UserService
 			{
 				int uID = Integer.parseInt(userutil.findUserid(email));
 				UserInfo.userid = uID;
-				URI uri = UriBuilder.fromPath("/spliteasy/welcome.jsp").queryParam("g", gId).build();
+				URI uri = UriBuilder.fromPath("/spliteasy/index.jsp").queryParam("g", gId).build();
 				return Response.seeOther(uri).build();
 			}
 			else

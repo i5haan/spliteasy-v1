@@ -4,7 +4,7 @@ document.querySelector("div.expensefocus").addEventListener("click",function(){
 			})
 			
 var init=function(){
-	
+	$(".stats").addClass("hide")
 	$(".groupheading").text("Select a Group from the List!!")
 	$("#groupusercreate").text("")
 	$("#groupuserdate").text("")
@@ -13,6 +13,7 @@ var init=function(){
 	$(".eformtoggle").addClass("hide")
 	$(".settleuptoggle").addClass("hide")
 	$(".deletegroup").addClass("hide")
+	$(".groupstats").addClass("hide")
 	
 	$(".settleupfocus").addClass("hide")
 	$(".noexpense").addClass("hide")
@@ -65,9 +66,13 @@ $(".eformtoggle").unbind().click(function(){
 
 var loadGroup=function(gid){
 	$.get("/spliteasy/webapi/group/"+gid,function(data){
+		$(".total").text("")
+		$(".paid").text("")
+		$(".share").text("")
 		$(".eformtoggle").removeClass("hide")
 		$(".settleuptoggle").removeClass("hide")
 		$(".deletegroup").removeClass("hide")
+		$(".groupstats").removeClass("hide")
 		$("#splitmember").html('<span class="col"><b>MEMBERS</b></span><span class="col"><b>SHARE</b></span><br>')
 		$(".noexpense").addClass("hide")
 		$(".expensepanel").addClass("hide")
@@ -108,9 +113,18 @@ var loadGroup=function(gid){
 			$("div.addmemberinputform").toggleClass("hide")
 		})
 		ascrollto("caption-full")
+		loadGroupStats(gid)
 		loadSettleUp(gid)
 		loadExpense(gid)
 });
+}
+var loadGroupStats=function(gid){
+	$.get("http://localhost:8080/spliteasy/webapi/group/"+gid+"/groupstats",function(data){
+		$(".total").text("Total Group Expense are Rs "+data.total)
+		$(".paid").text("You have paid in total Rs "+data.totaluserpaid)
+		$(".share").text("You have a share of Rs "+data.totalusershare)
+		
+		})
 }
 
 var loadForm=function(gid){
@@ -191,6 +205,7 @@ var loadExpense=function(gid){
 					    	   $(".expensepanel").addClass("hide")
 					    	   loadExpense(gid)
 					    	   loadSettleUp(gid)
+					    	   loadGroupStats(gid)
 					       }
 					    }
 					});
@@ -231,8 +246,9 @@ var loadSettleUp=function(gid){
 										data:$.param(sendData,true),
 										type:"POST",
 										success:function(res){
-											alert("Successfully Settleup!")
+											alert("Successfully Settled up!")
 											loadSettleUp(gid)
+											loadGroupStats(gid)
 										}
 									})
 								})
@@ -277,6 +293,7 @@ $(".expensesubmit").unbind().click(function(){
 					})
 					loadExpense(gid)
 					loadSettleUp(gid)
+					loadGroupStats(gid)
 					$(".noexpense").addClass("hide")
 				}
 		}
@@ -292,6 +309,11 @@ function ascrollto(id) {
 	  scrollTop: etop
 	}, 1000);
 }
+
+$(".groupstats").unbind().click(function(){
+	$(".stats").toggleClass("hide")
+	
+})
 
 
 

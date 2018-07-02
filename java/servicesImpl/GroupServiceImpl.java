@@ -12,6 +12,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import model.Group;
+import model.GroupStats;
 import model.Message;
 import model.UserInfo;
 import persistance.Entity;
@@ -239,6 +240,80 @@ public class GroupServiceImpl implements GroupService
 		return Response.ok()
 				.entity(tempGroup)
 				.build();
+	}
+	
+	@GET
+	@Path("{id}/groupstats")
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	public Response groupStats(@PathParam("id") String gid)
+	{
+		String query1="select *from user where userid="+UserInfo.userid;
+		ArrayList<Entity> res2=new ArrayList<>();
+		res2=dbUtil.runQuery(query1, "user");
+		if(res2.isEmpty())
+		{
+			Message m=new Message();
+			m.setStatus("F");
+			m.setMessage("User not Logged In");
+			return Response.ok()
+					.entity(m)
+						.build();
+		}
+		query1="select *from user where userid in (select userid from group_member where grpid="+gid+") and userid="+UserInfo.userid;
+		res2=new ArrayList<>();
+		res2=dbUtil.runQuery(query1, "user");
+		if(res2.isEmpty())
+		{
+			Message m=new Message();
+			m.setStatus("F");
+			m.setMessage("Not Authorized");
+			return Response.ok()
+					.entity(m)
+						.build();
+		}
+		System.out.println(gid);
+		Message m=new Message();
+		try {
+			Integer.parseInt(gid);
+		}catch(Exception e)
+		{
+			m.setMessage("Invalid Group Id");
+			m.setStatus("F");
+			return Response.ok().entity(m).build();
+		}
+		GroupStats gs=new GroupStats();
+		String tTotal=dbUtil.findOneColumn("Sum(amount)", "expense", "grpid", Integer.parseInt(gid));
+		String tPaid=dbUtil.findOneColumn("Sum(amount)", "expense", "paid_by="+UserInfo.userid+" and grpid", Integer.parseInt(gid));
+		String tShare=dbUtil.findOneColumn("sum(s_amt)", "expense, split_expense", "expense.eid=split_expense.eid and grpid="+gid+" and userid", UserInfo.userid);
+		if(tTotal==null)
+		{
+			gs.setTotal(0);
+		}
+		else
+		{
+			gs.setTotal(Double.parseDouble(tTotal));
+		}
+		
+		if(tPaid==null)
+		{
+			gs.setTotaluserpaid(0);
+		}
+		else
+		{
+			gs.setTotaluserpaid(Double.parseDouble(tPaid));
+		}
+		
+		if(tShare==null)
+		{
+			gs.setTotalusershare(0);;
+		}
+		else
+		{
+			gs.setTotalusershare(Double.parseDouble(tShare));
+		}
+		
+		
+		return Response.ok().entity(gs).build();
 	}
 	
 	@DELETE

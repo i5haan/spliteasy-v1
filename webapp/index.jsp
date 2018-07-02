@@ -42,6 +42,13 @@
 
   <div class="container">
   <div class="row">
+  		  <div class="col-md-12">
+	  		<div class="profileview hide">
+	  			<p>My name is Ishaan!</p>
+	  		</div>
+	  </div>
+  </div>
+  <div class="row">
     <div class="col-md-6">
       <p class="lead"><em>Your Groups</em></p>
       <div class="list-group">
@@ -76,6 +83,7 @@
               <button class="eformtoggle btn btn-success pull-right hide">Add Expense</button>
               <button class="settleuptoggle btn btn-primary pull-right hide">Settle Up</button>
               <button class="deletegroup btn btn-danger pull-right hide">Delete This Group</button>
+              <button class="groupstats btn btn-info pull-right hide">Group Stats</button>
                 <h2 class="groupheading">Select a Group from the List!!</h2>
                 
                 <h4><em><span id="groupusercreate"></span></em></h4>
@@ -98,6 +106,13 @@
                 </div>
               </div>
 
+            </div>
+            <div class="stats hide">
+            	<h2>Group Totals</h2>
+            	<hr>
+            	<p class="total"></p>
+            	<p class="paid" ></p>
+            	<p class="share"></p>
             </div>
             
             <div class="f-container">

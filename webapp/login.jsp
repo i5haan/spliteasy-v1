@@ -9,6 +9,7 @@
           src="https://code.jquery.com/jquery-3.3.1.min.js"
           integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
           crossorigin="anonymous"></script>
+          <script src="js/jquery.validate.min.js"></script>
     </head>
     <body>
         <nav class="navbar navbar-inverse">
@@ -38,14 +39,14 @@
         <div class="container">
             <h1 class="form-heading">Log in</h1>
             <div class="form-container">
-                <form method="post" action="/spliteasy/webapi/login">
+                <form method="post" id="form1" action="/spliteasy/webapi/login">
                     <div class="form-group">
                         <p class="form-label">Email</p>
-                        <input class="form-control" type="email" name="email" placeholder="Email Address" required="">
+                        <input class="form-control" type="text" name="email" placeholder="Email Address">
                     </div>
                     <div class="form-group">
                         <p class="form-label">Password</p>
-                        <input class="form-control" type="password" name="password" placeholder="Password" required="">
+                        <input class="form-control" type="password" name="password" placeholder="Password">
                     </div>
                     <div class="form-group">
                         <button class="btn btn-lg btn-success btn-block">Login</button>
@@ -54,7 +55,24 @@
                 <a href="/" class="btn btn-lg btn-default btn-block">Go Back</a>
             </div>
 
-    
+    <script>
+        $(document).ready(function(){
+        	$("#form1").validate({
+        		rules: {
+        			email:{
+        				required: true
+        			},
+        			password:{
+        				required:true
+        			}
+        		},
+        		messages:{
+        			email: "<b><font color='#7f0000' face='Arial Black'>Please enter a valid email address</b>",
+        			password:"<b><font color='#7f0000' face='Arial Black'>Please enter your password</b>" 
+        		}
+        	});
+        });        
+        </script>
     
         </div>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>

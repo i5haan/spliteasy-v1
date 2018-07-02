@@ -20,9 +20,9 @@ public class DbUtil
 	public static Connection con = null;
 	public 	static void dbConnection()
 	{
-		String url = "jdbc:mysql://localhost:3306/spliteasy";
-		String username = "root";
-		String password = "pwd";
+		String url = "jdbc:mysql://mydbinstance.c8zp6prt4jpm.ap-south-1.rds.amazonaws.com:3306/spliteasy";
+		String username = "i5haan";
+		String password = "12345678";
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 			con = DriverManager.getConnection(url, username, password);
