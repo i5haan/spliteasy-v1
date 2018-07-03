@@ -1,4 +1,5 @@
 <%@ page import="model.UserInfo" %>
+<%if(UserInfo.userid==0){response.sendRedirect("/spliteasy/login.jsp");} %>
 <!DOCTYPE HTML>
 <html>
     <head>
